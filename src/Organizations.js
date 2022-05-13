@@ -1,11 +1,75 @@
 import React, { useEffect, useState } from 'react'
-// import { Form, Input, Card, Statistic } from 'semantic-ui-react'
-import { Table, Grid, Label, Button } from 'semantic-ui-react'
+// import { Card, Statistic } from 'semantic-ui-react'
+import { Table, Grid, Label, Button, Form, Input } from 'semantic-ui-react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 
 import { useSubstrateState } from './substrate-lib'
-// import { TxButton } from './substrate-lib/components'
+import { TxButton } from './substrate-lib/components'
+
+const acctAddr = acct => (acct ? acct.address : '')
+
+function CreateOrganization() {
+  const { api, currentAccount } = useSubstrateState()
+  const [isOrganization, setIsOrganization] = useState(false)
+  // The transaction submission status
+  const [status, setStatus] = useState('')
+  // const [currentValue, setCurrentValue] = useState(0)
+  const [formValue, setFormValue] = useState('')
+  // currentAccount &&
+  // api.query.organizationIdentity.organizations()
+
+  // When account address changes, update subscriptions
+  useEffect(() => {
+    let unsubscribe
+
+    // If the user has selected an address, create a new subscription
+    currentAccount &&
+      api.query.organizationIdentity
+        .organizations(acctAddr(currentAccount), val => {
+          setIsOrganization(!val.isEmpty)
+          setFormValue('')
+        })
+        .then(unsub => (unsubscribe = unsub))
+        .catch(console.error)
+  
+      return () => unsubscribe && unsubscribe()
+    }, [api, currentAccount])
+
+
+  return currentAccount && !isOrganization ? (
+    <div>
+      <h2>Make {currentAccount.meta.name.toUpperCase()} an organization</h2>
+      <Label pointing="left">
+        {currentAccount.meta.name}
+      </Label>
+      <Form>
+        <Form.Field>
+          <Input
+            label="Name of the organization"
+            state="newValue"
+            type="string"
+            onChange={(_, { value }) => setFormValue(value)}
+          />
+        </Form.Field>
+        <Form.Field style={{ textAlign: 'center' }}>
+          <TxButton
+            label="Create"
+            type="SIGNED-TX"
+            setStatus={setStatus}
+            attrs={{
+              palletRpc: 'organizationIdentity',
+              callable: 'createOrganization',
+              inputParams: [formValue],
+              paramFields: [true],
+            }}
+          />
+        </Form.Field>
+        <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+      </Form>
+    </div> 
+    ) : null
+}
 
 function Main(props) {
   const { api, keyring } = useSubstrateState()
@@ -29,7 +93,7 @@ function Main(props) {
 
     api.query.organizationIdentity.organizations
       .multi(addresses, organizations => {
-        console.log(organizations)
+        // console.log(organizations)
         const orgsMap = []
         addresses.forEach((address, idx) => {
           if (!organizations[idx].isEmpty) {
@@ -38,19 +102,8 @@ function Main(props) {
               accountName: names[idx],
               name: organizations[idx].unwrap().name.toHuman()
             })
-            
-            // orgsMap.set(address, {
-            //   name: organizations[idx].unwrap().name.toHuman()
-            // })
           }
         });
-        // const balancesMap = addresses.reduce(
-        //   (acc, address, index) => ({
-        //     ...acc,
-        //     [address]: balances[index].data.free.toHuman(),
-        //   }),
-        //   {}
-        // )
         setOrganizations(orgsMap)
       })
       .then(unsub => {
@@ -111,13 +164,14 @@ function Main(props) {
           </Table.Body>
         </Table>
       )}
+      <CreateOrganization />
     </Grid.Column>
   )
 }
 
 export default function Organizations(props) {
-  const { api } = useSubstrateState()
-  return api.query.organizationIdentity && api.query.organizationIdentity.organizations ? (
+  const { api, keyring } = useSubstrateState()
+  return keyring.getPairs && api.query && api.query.organizationIdentity && api.query.organizationIdentity.organizations ? (
     <Main {...props} />
   ) : null
 }

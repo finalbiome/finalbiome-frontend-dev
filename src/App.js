@@ -19,7 +19,7 @@ import Events from './Events'
 import Interactor from './Interactor'
 import Metadata from './Metadata'
 import NodeInfo from './NodeInfo'
-// import TemplateModule from './TemplateModule'
+import TemplateModule from './TemplateModule'
 import Transfer from './Transfer'
 import Upgrade from './Upgrade'
 import Organizations from './Organizations'
@@ -82,9 +82,9 @@ function Main() {
             <Interactor />
             <Events />
           </Grid.Row>
-          {/* <Grid.Row>
+          <Grid.Row>
             <TemplateModule />
-          </Grid.Row> */}
+          </Grid.Row>
           <Grid.Row>
             <Organizations />
           </Grid.Row>
