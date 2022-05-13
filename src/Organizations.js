@@ -28,6 +28,7 @@ function CreateOrganization() {
       api.query.organizationIdentity
         .organizations(acctAddr(currentAccount), val => {
           setIsOrganization(!val.isEmpty)
+          // reset data in the form for creating organization
           setFormValue('')
         })
         .then(unsub => (unsubscribe = unsub))
