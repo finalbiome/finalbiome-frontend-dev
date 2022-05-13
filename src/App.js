@@ -19,9 +19,10 @@ import Events from './Events'
 import Interactor from './Interactor'
 import Metadata from './Metadata'
 import NodeInfo from './NodeInfo'
-import TemplateModule from './TemplateModule'
+// import TemplateModule from './TemplateModule'
 import Transfer from './Transfer'
 import Upgrade from './Upgrade'
+import Organizations from './Organizations'
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
@@ -47,7 +48,7 @@ function Main() {
   )
 
   if (apiState === 'ERROR') return message(apiError)
-  else if (apiState !== 'READY') return loader('Connecting to Substrate')
+  else if (apiState !== 'READY') return loader('Connecting to FinalBiome')
 
   if (keyringState !== 'READY') {
     return loader(
@@ -81,8 +82,11 @@ function Main() {
             <Interactor />
             <Events />
           </Grid.Row>
-          <Grid.Row>
+          {/* <Grid.Row>
             <TemplateModule />
+          </Grid.Row> */}
+          <Grid.Row>
+            <Organizations />
           </Grid.Row>
         </Grid>
       </Container>
