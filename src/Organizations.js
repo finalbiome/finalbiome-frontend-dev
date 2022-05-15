@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 // import { Card, Statistic } from 'semantic-ui-react'
-import { Table, Grid, Label, Button, Form, Input } from 'semantic-ui-react'
+import { Table, Grid, Label, Button, Form, Input, Header } from 'semantic-ui-react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 
@@ -40,7 +40,7 @@ function CreateOrganization() {
 
   return currentAccount && !isOrganization ? (
     <div>
-      <h2>Make {currentAccount.meta.name.toUpperCase()} an organization</h2>
+      <Header as="h2">Make {currentAccount.meta.name.toUpperCase()} an organization</Header>
       <Label pointing="left">
         {currentAccount.meta.name}
       </Label>
@@ -118,7 +118,7 @@ function Main(props) {
 
   return (
     <Grid.Column>
-      <h1>Organizations</h1>
+      <Header as='h1'>Organizations</Header>
       {organizations.length === 0 ? (
         <Label basic color="yellow">
           No accounts to be shown
