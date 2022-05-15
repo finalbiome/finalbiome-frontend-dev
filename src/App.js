@@ -1,4 +1,4 @@
-import React, { createRef } from 'react'
+import React, { createRef, useState } from 'react'
 import {
   Container,
   Dimmer,
@@ -26,6 +26,7 @@ import Organizations from './Organizations'
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
+  const [menuActiveItem, setMenuActiveItem] = useState('home')
 
   const loader = text => (
     <Dimmer active>
@@ -61,7 +62,9 @@ function Main() {
   return (
     <div ref={contextRef}>
       <Sticky context={contextRef}>
-        <AccountSelector />
+        <Container>
+          <AccountSelector changeMenuItem={(name) => setMenuActiveItem(name)} currentMenuItem={menuActiveItem} />
+        </Container>
       </Sticky>
       <Container>
         <Grid stackable columns="equal">
@@ -71,23 +74,30 @@ function Main() {
             <BlockNumber />
             <BlockNumber finalized />
           </Grid.Row>
-          <Grid.Row stretched>
-            <Balances />
-          </Grid.Row>
-          <Grid.Row>
-            <Transfer />
-            <Upgrade />
-          </Grid.Row>
-          <Grid.Row>
-            <Interactor />
-            <Events />
-          </Grid.Row>
-          <Grid.Row>
-            <TemplateModule />
-          </Grid.Row>
-          <Grid.Row>
-            <Organizations />
-          </Grid.Row>
+          {menuActiveItem === 'home' ?
+            <div>
+              <Grid.Row stretched>
+                <Balances />
+              </Grid.Row>
+              <Grid.Row>
+                <Transfer />
+                <Upgrade />
+              </Grid.Row>
+              <Grid.Row>
+                <Interactor />
+                <Events />
+              </Grid.Row>
+              <Grid.Row>
+                <TemplateModule />
+              </Grid.Row>
+            </div> : null
+          }
+          {menuActiveItem === 'developer' ?
+            <Grid.Row>
+              <Organizations />
+            </Grid.Row>
+            : null
+          }
         </Grid>
       </Container>
       <DeveloperConsole />

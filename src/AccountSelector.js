@@ -5,7 +5,6 @@ import {
   Menu,
   Button,
   Dropdown,
-  Container,
   Icon,
   Image,
   Label,
@@ -26,6 +25,7 @@ function Main(props) {
     state: { keyring, currentAccount },
   } = useSubstrate()
 
+  const handleItemClick = (e, { name }) => props.changeMenuItem(name)
   // Get the list of accounts we possess the private key for
   const keyringOptions = keyring.getPairs().map(account => ({
     key: account.address,
@@ -59,12 +59,27 @@ function Main(props) {
         paddingTop: '1em',
         paddingBottom: '1em',
       }}
-    >
-      <Container>
+      pointing secondary stackable>
         <Menu.Menu>
           <Image
             src={`${process.env.PUBLIC_URL}/assets/finalbiome-logo.svg`}
             size="mini"
+            spaced="right"
+          />
+          <Menu.Item
+            name='home'
+            active={props.currentMenuItem === 'home'}
+            onClick={handleItemClick}
+          />
+          <Menu.Item
+            name='developer'
+            active={props.currentMenuItem === 'developer'}
+            onClick={handleItemClick}
+          />
+          <Menu.Item
+            name='gamer'
+            active={props.currentMenuItem === 'gamer'}
+            onClick={handleItemClick}
           />
         </Menu.Menu>
         <Menu.Menu position="right" style={{ alignItems: 'center' }}>
@@ -103,7 +118,6 @@ function Main(props) {
           />
           <BalanceAnnotation />
         </Menu.Menu>
-      </Container>
     </Menu>
   )
 }
