@@ -74,6 +74,9 @@ function Main() {
             <BlockNumber />
             <BlockNumber finalized />
           </Grid.Row>
+          <Grid.Row>
+            <Events />
+          </Grid.Row>
           {menuActiveItem === 'home' ?
             <div>
               <Grid.Row stretched>
