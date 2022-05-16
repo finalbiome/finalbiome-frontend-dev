@@ -29,6 +29,9 @@ function CreateOrganization(props) {
       api.query.organizationIdentity
         .organizations(acctAddr(currentAccount), val => {
           setIsOrganization(!val.isEmpty)
+          currentAccount.setMeta({
+            org: !val.isEmpty
+          })
           // reset data in the form for creating organization
           setFormValue('')
         })
@@ -225,7 +228,6 @@ function ManageMembers(props) {
 
   useEffect(() => {
     let unsubscribeAll = null
-
     /**
      * Returns true if `accAddr` is member of `orgAddr`
      * @param {AccountId} orgAddr organisation address
@@ -257,7 +259,7 @@ function ManageMembers(props) {
 
   }, [api, keyring, member, currentAccount, status])
 
-  return currentAccount ? (
+  return currentAccount && currentAccount.meta.org ? (
     <Segment>
       <Header as="h3">Manage Members of Organization</Header>
       <AccountSelector selectedAccount={member} setSelectedAccount={setMember} />
