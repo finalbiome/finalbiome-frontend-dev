@@ -36,7 +36,7 @@ function Main(props) {
           setEventFeed(e => [
             {
               key: keyNum,
-              icon: 'bell',
+              icon: evHuman.section === 'organizationIdentity' ? 'building' : 'bell',
               summary: evName,
               content: evParams,
             },
