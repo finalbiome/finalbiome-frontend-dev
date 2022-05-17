@@ -176,7 +176,10 @@ function AccountSelector({
         key: account.address,
         value: account.address,
         text: account.meta.name,
-        icon: account.meta.org ? 'game' : 'user',
+        // icon: account.meta.org ? 'game' : 'user',
+        content: (
+          <AccountView address={account.address} />
+        )
       }
     })
     setAccountsOptions(addresses)
