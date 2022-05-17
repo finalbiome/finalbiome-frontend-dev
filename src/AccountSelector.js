@@ -125,7 +125,7 @@ function Main(props) {
               basic
               circular
               size="large"
-              icon={currentAccount.meta.org ? "game" : "user"}
+              icon={currentAccount?.meta.org ? "game" : "user"}
               color={currentAccount ? 'green' : 'red'}
             />
           </CopyToClipboard>
