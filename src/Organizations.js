@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 // import PropTypes from 'prop-types'
 // import { Card, Statistic } from 'semantic-ui-react'
+
+// import { encodeAddress } from '@polkadot/util-crypto'
+import { AccountView } from './AccountView'
+
 import {
   Table, Grid, Label, Button, Form, Input, Header, Menu, Icon, Segment,
   Dropdown
 } from 'semantic-ui-react'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 
 import { useSubstrateState } from './substrate-lib'
@@ -129,38 +132,20 @@ function OrganizationsList(props) {
       ) : (
         <Table celled striped size="small">
           <Table.Body>
-            <Table.Row>
-              <Table.Cell width={3} textAlign="right">
-                <strong>Account Name</strong>
-              </Table.Cell>
+              <Table.Row>
               <Table.Cell width={10}>
                 <strong>Address</strong>
               </Table.Cell>
-              <Table.Cell width={3} textAlign="right">
+                <Table.Cell width={6} textAlign="right">
                 <strong>Organization Name</strong>
               </Table.Cell>
             </Table.Row>
             {organizations.map(org => (
               <Table.Row key={org.address}>
-                <Table.Cell width={3} textAlign="right">
-                  {org.accountName}
-                </Table.Cell>
                 <Table.Cell width={10}>
-                  <span style={{ display: 'inline-block', minWidth: '31em' }}>
-                    {org.address}
-                  </span>
-                  <CopyToClipboard text={org.address}>
-                    <Button
-                      basic
-                      circular
-                      compact
-                      size="mini"
-                      color="blue"
-                      icon="copy outline"
-                    />
-                  </CopyToClipboard>
+                  <AccountView address={org.address} />
                 </Table.Cell>
-                <Table.Cell width={3} textAlign="right">
+                <Table.Cell width={6} textAlign="right">
                   {org.name}
                 </Table.Cell>
               </Table.Row>
@@ -212,10 +197,6 @@ function AccountSelector({
     />
   )
 }
-// AccountSelector.propTypes = {
-//   selectedAccount: PropTypes.string.isRequired(),
-//   setSelectedAccount: PropTypes.func.isRequired()
-// }
 
 function ManageMembers(props) {
   const { api, keyring } = useSubstrateState()
@@ -298,6 +279,94 @@ function ManageMembers(props) {
   ) : null
 }
 
+function FA(props) {
+  return (
+    <div>
+      <Header as='h2'>Fungible Assets</Header>
+      <FaList />
+    </div>
+  )
+}
+
+function FaList(props) {
+  // eslint-disable-next-line no-unused-vars
+  const { api, keyring, currentAccount } = useSubstrateState()
+  // eslint-disable-next-line no-unused-vars
+  const [assets, setAssets] = useState([])
+  const [assetIds, setAssetIds] = useState([])
+
+  const subscribeFAIdByOrg = () => {
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.fungibleAssets.assetsOf.keys(acctAddr(currentAccount),
+        async keys => {
+          setAssetIds(keys.map(k => k.toHuman()))
+        })
+    }
+    asyncFetch()
+    return () => unsub && unsub()
+  }
+  useEffect(subscribeFAIdByOrg, [api, currentAccount])
+
+  const subscribeFA = () => {
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.fungibleAssets.assets.multi(assetIds,
+        async entries => {
+          const assets = entries.map((entry, idx) => {
+            const data = entry.toJSON()
+            const id = assetIds[idx]
+            return { id, ...data }
+          })
+          setAssets(assets)
+        }
+      )
+    }
+    asyncFetch()
+    return () => unsub && unsub()
+  }
+  useEffect(subscribeFA, [api, keyring, assetIds])
+
+  return (
+    <div>
+      {assets.length === 0 ? (
+        <Label basic color="yellow">
+          No fungible assets to be shown
+        </Label>
+      ) : (
+        <Table celled striped size="small">
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell width={2} textAlign="right">
+                <strong>Asset Id</strong>
+              </Table.Cell>
+              <Table.Cell width={10}>
+                <strong>Owner</strong>
+              </Table.Cell>
+              <Table.Cell width={4} textAlign="right">
+                <strong>Supply</strong>
+              </Table.Cell>
+            </Table.Row>
+            {assets.sort((a, b) => a.id[1] - b.id[1]).map(asset => (
+              <Table.Row key={asset.id[1]}>
+                <Table.Cell width={2} textAlign="right">
+                  {asset.id[1]}
+                </Table.Cell>
+                <Table.Cell width={10}>
+                  <AccountView address={asset.owner} />
+                </Table.Cell>
+                <Table.Cell width={4}>
+                  {asset.supply}
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      )}
+    </div>
+  )
+}
+
 function Main(props) {
   const handleItemClick = (e, { name }) => setMenuActiveItem(name)
 
@@ -316,7 +385,7 @@ function Main(props) {
                 active={menuActiveItem === 'orgs'}
                 onClick={handleItemClick}
               >
-                <Icon name='building' />
+                <Icon name='game' />
                 Orgs
               </Menu.Item>
 
@@ -348,7 +417,13 @@ function Main(props) {
                 <ManageMembers {...props} />
               </div>
               : null}
+            {menuActiveItem === 'fa' ?
+              <div>
+                <FA />
+              </div>
+              : null}
           </Grid.Column>
+
         </Grid.Row>
       </Grid>
     </Grid.Column>
