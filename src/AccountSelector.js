@@ -24,6 +24,8 @@ function Main(props) {
     setCurrentAccount,
     state: { keyring, currentAccount },
   } = useSubstrate()
+  const { api } = useSubstrateState()
+  const [orgIds, setOrgIds] = useState([])
 
   const handleItemClick = (e, { name }) => props.changeMenuItem(name)
   // Get the list of accounts we possess the private key for
@@ -31,12 +33,34 @@ function Main(props) {
     key: account.address,
     value: account.address,
     text: account.meta.name.toUpperCase(),
-    icon: 'user',
+    icon: account.meta.org ? 'game' : 'user',
   }))
 
   const initialAddress =
     keyringOptions.length > 0 ? keyringOptions[0].value : ''
 
+  function getAllOrganizations() {
+    if (!currentAccount || !api) return
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.organizationIdentity.organizations.keys(
+        keys => {
+          setOrgIds(keys.map(k => k.toHuman()[0]))
+        })
+    }
+    asyncFetch()
+    return () => {unsub && unsub()}
+  }
+  useEffect(getAllOrganizations, [api, currentAccount, orgIds])
+
+  function setMetaOrg() {
+    keyring.getPairs().forEach(acc => {
+      acc.setMeta({
+        org: orgIds.includes(acc.address)
+      })
+    });
+  }
+  useEffect(setMetaOrg, [keyring, orgIds])
   // Set the initial address
   useEffect(() => {
     // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
@@ -101,7 +125,7 @@ function Main(props) {
               basic
               circular
               size="large"
-              icon="user"
+              icon={currentAccount.meta.org ? "game" : "user"}
               color={currentAccount ? 'green' : 'red'}
             />
           </CopyToClipboard>

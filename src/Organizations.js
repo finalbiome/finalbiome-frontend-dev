@@ -160,7 +160,9 @@ function OrganizationsList(props) {
 
 function AccountSelector({
   selectedAccount,
-  setSelectedAccount
+  setSelectedAccount,
+  onlyOrgs = false,
+  placeholder = 'Select account...'
 }) {
   const { api, keyring } = useSubstrateState()
   const [accountsOptions, setAccountsOptions] = useState([])
@@ -169,21 +171,21 @@ function AccountSelector({
   const handleChange = (e, { value }) => setSelectedAccount(value)
 
   useEffect(() => {
-    const addresses = keyring.getPairs().map(account => {
+    const addresses = keyring.getPairs().filter(a => !onlyOrgs || a.meta.org).map(account => {
       return {
         key: account.address,
         value: account.address,
         text: account.meta.name,
-        icon: 'user',
+        icon: account.meta.org ? 'game' : 'user',
       }
     })
     setAccountsOptions(addresses)
 
-  }, [api, keyring])
+  }, [api, keyring, onlyOrgs])
 
   return (
     <Dropdown
-      placeholder='Select account...'
+      placeholder={placeholder}
       fluid
       selection
       allowAdditions
@@ -284,6 +286,7 @@ function FA(props) {
     <div>
       <Header as='h2'>Fungible Assets</Header>
       <FaList />
+      <FaManage />
     </div>
   )
 }
@@ -292,27 +295,28 @@ function FaList(props) {
   // eslint-disable-next-line no-unused-vars
   const { api, keyring, currentAccount } = useSubstrateState()
   // eslint-disable-next-line no-unused-vars
+  const [org, setOrg] = useState('')
   const [assets, setAssets] = useState([])
   const [assetIds, setAssetIds] = useState([])
 
   const subscribeFAIdByOrg = () => {
     let unsub = null
     const asyncFetch = async () => {
-      unsub = await api.query.fungibleAssets.assetsOf.keys(acctAddr(currentAccount),
-        async keys => {
+      unsub = await api.query.fungibleAssets.assetsOf.keys(org,
+        keys => {
           setAssetIds(keys.map(k => k.toHuman()))
         })
     }
     asyncFetch()
-    return () => unsub && unsub()
+    return () => {unsub && unsub()}
   }
-  useEffect(subscribeFAIdByOrg, [api, currentAccount])
+  useEffect(subscribeFAIdByOrg, [api, currentAccount, org])
 
   const subscribeFA = () => {
     let unsub = null
     const asyncFetch = async () => {
       unsub = await api.query.fungibleAssets.assets.multi(assetIds,
-        async entries => {
+        entries => {
           const assets = entries.map((entry, idx) => {
             const data = entry.toJSON()
             const id = assetIds[idx]
@@ -323,12 +327,13 @@ function FaList(props) {
       )
     }
     asyncFetch()
-    return () => unsub && unsub()
+    return () => {unsub && unsub()}
   }
   useEffect(subscribeFA, [api, keyring, assetIds])
 
   return (
     <div>
+      <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'}/>
       {assets.length === 0 ? (
         <Label basic color="yellow">
           No fungible assets to be shown
@@ -364,6 +369,43 @@ function FaList(props) {
         </Table>
       )}
     </div>
+  )
+}
+
+function FaManage(params) {
+
+  return (
+    <Segment>
+      <Header as="h3">Manage of FA</Header>
+      <FaCreate />
+    </Segment>
+  )
+}
+
+function FaCreate(props) {
+  const [org, setOrg] = useState('')
+  const [status, setStatus] = useState('')
+
+  return (
+    <Form>
+      <Form.Field>
+        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'}/>
+      </Form.Field>
+      <Form.Field style={{ textAlign: 'center' }}>
+        <TxButton
+          label="Create FA"
+          type="SIGNED-TX"
+          setStatus={setStatus}
+          attrs={{
+            palletRpc: 'fungibleAssets',
+            callable: 'create',
+            inputParams: [org],
+            paramFields: [true],
+          }}
+        />
+      </Form.Field>
+      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+    </Form>
   )
 }
 
