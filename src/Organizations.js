@@ -7,7 +7,7 @@ import { AccountView } from './AccountView'
 
 import {
   Table, Grid, Label, Button, Form, Input, Header, Menu, Icon, Segment,
-  Dropdown
+  Dropdown, Tab
 } from 'semantic-ui-react'
 
 
@@ -376,11 +376,21 @@ function FaList(props) {
 }
 
 function FaManage(params) {
+  const panes = [
+    {
+      menuItem: 'Create FA',
+      render: () => <Tab.Pane attached={false}><FaCreate /></Tab.Pane>,
+    },
+    {
+      menuItem: 'Remove FA',
+      render: () => <Tab.Pane attached={false}><FaRemove /></Tab.Pane>,
+    },
+  ]
 
   return (
     <Segment>
       <Header as="h3">Manage of FA</Header>
-      <FaCreate />
+      <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
     </Segment>
   )
 }
@@ -403,6 +413,87 @@ function FaCreate(props) {
             palletRpc: 'fungibleAssets',
             callable: 'create',
             inputParams: [org],
+            paramFields: [true],
+          }}
+        />
+      </Form.Field>
+      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+    </Form>
+  )
+}
+
+function FaSelector({
+  selectedFa,
+  setSelectedFa,
+  placeholder='Select FA'
+}) {
+  const { api, } = useSubstrateState()
+  const [assetOptions, setAssetOptions] = useState([])
+  const [assetIds, setAssetIds] = useState([])
+
+  const handleChange = (e, { value }) => setSelectedFa(value)
+
+  const fetchAllFaIds =() => {
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.fungibleAssets.assets.keys(
+        keys => {
+          setAssetIds(keys.map(k => k.toHuman()[0]))
+        })
+    }
+    asyncFetch()
+    return () => {unsub && unsub()}
+  }
+  useEffect(fetchAllFaIds, [api, assetIds])
+
+  const fillOptions = () => {
+    setAssetOptions(assetIds.map(a => {
+      return {
+        key: a,
+        value: a,
+        text: a,
+        icon: 'sun',
+      }
+    }))
+  }
+  useEffect(fillOptions, [assetIds])
+
+  return (
+    <Dropdown
+      placeholder={placeholder}
+      fluid
+      selection
+      search
+      clearable
+      options={assetOptions}
+      value={selectedFa}
+      onChange={handleChange}
+    />
+  )
+}
+
+function FaRemove(props) {
+  const [org, setOrg] = useState('')
+  const [selectedAsset, setSelectedAsset] = useState('')
+  const [status, setStatus] = useState('')
+
+  return (
+    <Form>
+      <Form.Field>
+        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'}/>
+      </Form.Field>
+      <Form.Field>
+        <FaSelector selectedFa={selectedAsset} setSelectedFa={setSelectedAsset} />
+      </Form.Field>
+      <Form.Field style={{ textAlign: 'center' }}>
+        <TxButton
+          label="Create FA"
+          type="SIGNED-TX"
+          setStatus={setStatus}
+          attrs={{
+            palletRpc: 'fungibleAssets',
+            callable: 'remove',
+            inputParams: [org, selectedAsset],
             paramFields: [true],
           }}
         />
