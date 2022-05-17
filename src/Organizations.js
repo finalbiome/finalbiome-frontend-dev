@@ -487,14 +487,15 @@ function FaRemove(props) {
       </Form.Field>
       <Form.Field style={{ textAlign: 'center' }}>
         <TxButton
-          label="Create FA"
+          label="Remove FA"
           type="SIGNED-TX"
+          color='red'
           setStatus={setStatus}
           attrs={{
             palletRpc: 'fungibleAssets',
-            callable: 'remove',
+            callable: 'destroy',
             inputParams: [org, selectedAsset],
-            paramFields: [true],
+            paramFields: ['organization_id', 'asset_id'],
           }}
         />
       </Form.Field>
