@@ -313,7 +313,7 @@ function FaList(props) {
     asyncFetch()
     return () => {unsub && unsub()}
   }
-  useEffect(subscribeFAIdByOrg, [api, currentAccount, org])
+  useEffect(subscribeFAIdByOrg, [api, keyring, currentAccount, org])
 
   const subscribeFA = () => {
     let unsub = null
