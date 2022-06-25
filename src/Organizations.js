@@ -7,7 +7,7 @@ import { AccountView } from './AccountView'
 
 import {
   Table, Grid, Label, Button, Form, Input, Header, Menu, Icon, Segment,
-  Dropdown, Tab
+  Dropdown, Tab, Checkbox
 } from 'semantic-ui-react'
 
 
@@ -322,8 +322,9 @@ function FaList(props) {
         entries => {
           const assets = entries.map((entry, idx) => {
             const data = entry.toJSON()
+            const human = entry.toHuman()
             const id = assetIds[idx]
-            return { id, ...data }
+            return { id, human, ...data }
           })
           setAssets(assets)
         }
@@ -342,7 +343,7 @@ function FaList(props) {
           No fungible assets to be shown
         </Label>
       ) : (
-        <Table celled striped size="small">
+          <Table celled striped size="small" fixed singleLine>
           <Table.Body>
             <Table.Row>
               <Table.Cell width={2} textAlign="right">
@@ -354,6 +355,9 @@ function FaList(props) {
               <Table.Cell width={4} textAlign="right">
                 <strong>Supply</strong>
               </Table.Cell>
+                <Table.Cell width={4} textAlign="right">
+                  <strong>Raw</strong>
+                </Table.Cell>
             </Table.Row>
             {assets.sort((a, b) => a.id[1] - b.id[1]).map(asset => (
               <Table.Row key={asset.id[1]}>
@@ -363,8 +367,12 @@ function FaList(props) {
                 <Table.Cell width={10}>
                   <AccountView address={asset.owner} />
                 </Table.Cell>
-                <Table.Cell width={4}>
+                <Table.Cell width={3}>
                   {asset.supply}
+                </Table.Cell>
+                <Table.Cell width={1}
+                  title={JSON.stringify(asset.human, null, 2)}>
+                  {JSON.stringify(asset.human)}
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -397,14 +405,51 @@ function FaManage(params) {
 
 function FaCreate(props) {
   const [org, setOrg] = useState('')
+  const [faName, setFaName] = useState('')
+  const [faTopUpped, setFaTopUpped] = useState('')
+  const [faTopUppedSpeed, setFaTopUppedSpeed] = useState('')
   const [status, setStatus] = useState('')
+
+  const topUppedStruct = (faTopUpped, faTopUppedSpeed) => {
+    if (!faTopUpped || !parseInt(faTopUppedSpeed)) return undefined
+    return {
+      speed: faTopUppedSpeed
+    }
+  }
 
   return (
     <Form>
       <Form.Field>
         <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'}/>
       </Form.Field>
-      <Form.Field style={{ textAlign: 'center' }}>
+      <Form.Field>
+        <Input
+          label="Name of the asset"
+          state="newValue"
+          type="string"
+          onChange={(_, { value }) => setFaName(value)}
+        />
+      </Form.Field>
+      <Form.Field>
+        <Checkbox
+          label='Asset is Top Upped'
+          onChange={(_, { checked }) => setFaTopUpped(checked)}
+          // required={false}
+          defaultChecked={false}
+        />
+      </Form.Field>
+      {faTopUpped ?
+        <Form.Field>
+          <Input
+            label="Speed of recovery"
+            state="newValue"
+            type="number"
+            onChange={(_, { value }) => setFaTopUppedSpeed(value)}
+          />
+        </Form.Field>
+        : null
+      }
+      <Form.Field>
         <TxButton
           label="Create FA"
           type="SIGNED-TX"
@@ -412,8 +457,9 @@ function FaCreate(props) {
           attrs={{
             palletRpc: 'fungibleAssets',
             callable: 'create',
-            inputParams: [org],
-            paramFields: [true],
+            inputParams: [org, faName, topUppedStruct(faTopUpped, faTopUppedSpeed)],
+            paramFields: ['organization_id', 'name', { value: 'top_upped', optional: !faTopUpped }],
+
           }}
         />
       </Form.Field>
