@@ -550,6 +550,245 @@ function FaRemove(props) {
   )
 }
 
+function NFA(props) {
+  return (
+    <div>
+      <Header as='h2'>Non Fungible Assets</Header>
+      <NfaList />
+      <NfaManage />
+    </div>
+  )
+}
+
+
+function NfaList(props) {
+  // eslint-disable-next-line no-unused-vars
+  const { api, keyring, currentAccount } = useSubstrateState()
+  // eslint-disable-next-line no-unused-vars
+  const [org, setOrg] = useState('')
+  const [classes, setClasses] = useState([])
+  const [classIds, setClassIds] = useState([])
+
+  const subscribeNFAIdByOrg = () => {
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.nonFungibleAssets.classAccounts.keys(org,
+        keys => {
+          setClassIds(keys.map(k => k.toHuman()))
+        })
+    }
+    asyncFetch()
+    return () => { unsub && unsub() }
+  }
+  useEffect(subscribeNFAIdByOrg, [api, keyring, currentAccount, org])
+
+  const subscribeNFA = () => {
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.nonFungibleAssets.classes.multi(classIds,
+        entries => {
+          const classes = entries.map((entry, idx) => {
+            const data = entry.toJSON()
+            const human = entry.toHuman()
+            const id = classIds[idx]
+            return { id, human, ...data }
+          })
+          setClasses(classes)
+        }
+      )
+    }
+    asyncFetch()
+    return () => { unsub && unsub() }
+  }
+  useEffect(subscribeNFA, [api, keyring, classIds])
+
+  return (
+    <div>
+      <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'} />
+      {classes.length === 0 ? (
+        <Label basic color="yellow">
+          No non-fungible asset classes to be shown
+        </Label>
+      ) : (
+        <Table celled striped size="small" fixed singleLine>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell width={2} textAlign="right">
+                <strong>Class Id</strong>
+              </Table.Cell>
+              <Table.Cell width={10}>
+                <strong>Owner</strong>
+              </Table.Cell>
+              <Table.Cell width={4} textAlign="right">
+                <strong>Instances</strong>
+              </Table.Cell>
+              <Table.Cell width={4} textAlign="right">
+                <strong>Raw</strong>
+              </Table.Cell>
+            </Table.Row>
+            {classes.sort((a, b) => a.id[1] - b.id[1]).map(asset => (
+              <Table.Row key={asset.id[1]}>
+                <Table.Cell width={2} textAlign="right">
+                  {asset.id[1]}
+                </Table.Cell>
+                <Table.Cell width={10}>
+                  <AccountView address={asset.owner} />
+                </Table.Cell>
+                <Table.Cell width={3}>
+                  {asset.supply}
+                </Table.Cell>
+                <Table.Cell width={1}
+                  title={JSON.stringify(asset.human, null, 2)}>
+                  {JSON.stringify(asset.human)}
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      )}
+    </div>
+  )
+}
+
+function NfaManage(params) {
+  const panes = [
+    {
+      menuItem: 'Create NFA',
+      render: () => <Tab.Pane attached={false}><NfaCreate /></Tab.Pane>,
+    },
+    {
+      menuItem: 'Remove NFA',
+      render: () => <Tab.Pane attached={false}><NfaRemove /></Tab.Pane>,
+    },
+  ]
+
+  return (
+    <Segment>
+      <Header as="h3">Manage of NFA</Header>
+      <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
+    </Segment>
+  )
+}
+
+function NfaCreate(props) {
+  const [org, setOrg] = useState('')
+  const [nfaName, setNfaName] = useState('')
+  const [status, setStatus] = useState('')
+
+  return (
+    <Form>
+      <Form.Field>
+        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'} />
+      </Form.Field>
+      <Form.Field>
+        <Input
+          label="Name of the asset class"
+          state="newValue"
+          type="string"
+          onChange={(_, { value }) => setNfaName(value)}
+        />
+      </Form.Field>
+      <Form.Field>
+        <TxButton
+          label="Create FA"
+          type="SIGNED-TX"
+          setStatus={setStatus}
+          attrs={{
+            palletRpc: 'nonFungibleAssets',
+            callable: 'create',
+            inputParams: [org, nfaName,],
+            paramFields: ['organization_id', 'name',],
+
+          }}
+        />
+      </Form.Field>
+      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+    </Form>
+  )
+}
+
+function NfaRemove(props) {
+  const [org, setOrg] = useState('')
+  const [selectedClass, setSelectedClass] = useState('')
+  const [status, setStatus] = useState('')
+
+  return (
+    <Form>
+      <Form.Field>
+        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'} />
+      </Form.Field>
+      <Form.Field>
+        <NfaSelector selectedNfa={selectedClass} setSelectedNfa={setSelectedClass} />
+      </Form.Field>
+      <Form.Field style={{ textAlign: 'center' }}>
+        <TxButton
+          label="Remove FA"
+          type="SIGNED-TX"
+          color='red'
+          setStatus={setStatus}
+          attrs={{
+            palletRpc: 'nonFungibleAssets',
+            callable: 'destroy',
+            inputParams: [org, selectedClass],
+            paramFields: ['organization_id', 'class_id'],
+          }}
+        />
+      </Form.Field>
+      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+    </Form>
+  )
+}
+
+function NfaSelector({
+  selectedNfa,
+  setSelectedNfa,
+  placeholder = 'Select NFA'
+}) {
+  const { api, } = useSubstrateState()
+  const [classOptions, setClassOptions] = useState([])
+  const [classIds, setClassIds] = useState([])
+
+  const handleChange = (e, { value }) => setSelectedNfa(value)
+
+  const fetchAllFaIds = () => {
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.nonFungibleAssets.classes.keys(
+        keys => {
+          setClassIds(keys.map(k => k.toHuman()[0]))
+        })
+    }
+    asyncFetch()
+    return () => { unsub && unsub() }
+  }
+  useEffect(fetchAllFaIds, [api, classIds])
+
+  const fillOptions = () => {
+    setClassOptions(classIds.map(a => {
+      return {
+        key: a,
+        value: a,
+        text: a,
+        icon: 'diamond',
+      }
+    }))
+  }
+  useEffect(fillOptions, [classIds])
+
+  return (
+    <Dropdown
+      placeholder={placeholder}
+      fluid
+      selection
+      search
+      clearable
+      options={classOptions}
+      value={selectedNfa}
+      onChange={handleChange}
+    />
+  )
+}
+
 function Main(props) {
   const handleItemClick = (e, { name }) => setMenuActiveItem(name)
 
@@ -603,6 +842,11 @@ function Main(props) {
             {menuActiveItem === 'fa' ?
               <div>
                 <FA />
+              </div>
+              : null}
+            {menuActiveItem === 'nfa' ?
+              <div>
+                <NFA />
               </div>
               : null}
           </Grid.Column>
