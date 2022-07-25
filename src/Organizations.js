@@ -7,7 +7,7 @@ import { AccountView } from './AccountView'
 
 import {
   Table, Grid, Label, Button, Form, Input, Header, Menu, Icon, Segment,
-  Dropdown, Tab, Checkbox
+  Dropdown, Tab, Checkbox, Accordion
 } from 'semantic-ui-react'
 
 
@@ -507,7 +507,7 @@ function FaSelector({
   return (
     <Dropdown
       placeholder={placeholder}
-      fluid
+      // fluid
       selection
       search
       clearable
@@ -657,6 +657,10 @@ function NfaManage(params) {
       render: () => <Tab.Pane attached={false}><NfaCreate /></Tab.Pane>,
     },
     {
+      menuItem: 'Edit NFA',
+      render: () => <Tab.Pane attached={false}><NfaEdit /></Tab.Pane>,
+    },
+    {
       menuItem: 'Remove NFA',
       render: () => <Tab.Pane attached={false}><NfaRemove /></Tab.Pane>,
     },
@@ -667,6 +671,332 @@ function NfaManage(params) {
       <Header as="h3">Manage of NFA</Header>
       <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
     </Segment>
+  )
+}
+
+function PurchasedEditor({
+  nfaPurchased,
+  setNfaPurchased,
+  nfaOwner,
+  nfaClass,
+  setStatus,
+}) {
+  const [showNewOfferForm, setShowNewOfferForm] = useState(false)
+
+  const OffersTable = () => {
+    // if (!nfaDetails.purchased) return null;
+    const offers = nfaPurchased?.offers || []
+    const FormatedAttributes = ({ attrs }) => {
+      return (
+        <div>
+          {attrs && attrs.map((a, i) => (
+            <div key={'fattr-' + i}>
+              <Label horizontal>{a.key}</Label>
+              {JSON.stringify(a.value)}
+            </div>
+          ))}
+        </div>
+      )
+    }
+    return (
+      <div style={{ marginBottom: '1em' }}>
+        <Table>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>FA</Table.HeaderCell>
+              <Table.HeaderCell>Price</Table.HeaderCell>
+              <Table.HeaderCell>Attributes</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {offers.map((o, i) => (
+              <Table.Row key={'offr-t-' + i}>
+                <Table.Cell>{o.fa}</Table.Cell>
+                <Table.Cell>{o.price}</Table.Cell>
+                <Table.Cell><FormatedAttributes attrs={o.attributes} /></Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      </div>
+
+    )
+  }
+
+  const doShowNewOfferForm = () => {
+    setShowNewOfferForm(true)
+  }
+
+  const NewAttributeForm = ({ attributes, setAttributes }) => {
+
+    const [nameAttr, setNameAttr] = useState('')
+    const [typeAttr, setTypeAttr] = useState('Text')
+    const [numberValue, setNumberValue] = useState('')
+    const [numberMax, setNumberMax] = useState('')
+    const [textValue, setTextValue] = useState('')
+
+
+    const AttributesTable = () => {
+      if (attributes.length === 0) return null
+      return (
+        <Table style={{ marginBottom: '1em' }}>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Key</Table.HeaderCell>
+              <Table.HeaderCell>Value</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {attributes.map((a, i) => (
+              <Table.Row key={'attr-f-' + i}>
+                <Table.Cell>{a.key}</Table.Cell>
+                <Table.Cell>{JSON.stringify(a.value)}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      )
+    }
+
+    const options = [
+      { key: 0, text: 'Number', value: 'Number', icon: 'sort numeric up' },
+      { key: 1, text: 'Text', value: 'Text', icon: 'text cursor' },
+    ]
+    const handleChange = (e, { name, value }) => {
+      switch (name) {
+        case 'nameAttr':
+          setNameAttr(value)
+          break;
+        case 'typeAttr':
+          setTypeAttr(value)
+          break;
+        case 'numberValue':
+          setNumberValue(value)
+          break;
+        case 'numberMax':
+          setNumberMax(value)
+          break;
+        case 'textValue':
+          setTextValue(value)
+          break;
+        default:
+          break;
+      }
+    }
+
+    const addAttribute = () => {
+      const attr = {
+        key: nameAttr,
+        value: typeAttr === 'Text' ? {
+          [typeAttr]: textValue
+        } : {
+          [typeAttr]: {
+            numberValue: numberValue,
+            numberMax: numberMax
+          }
+        }
+      }
+      const attrs = [...attributes, attr]
+      setAttributes(attrs)
+      setNameAttr('')
+      setTypeAttr('Text')
+      setNumberValue('')
+      setNumberMax('')
+      setTextValue('')
+    }
+
+    return (
+      <div>
+        <AttributesTable />
+        <Form.Group key='a0' >
+          <Form.Input
+            icon='tag'
+            iconPosition='left'
+            label='Attr Name'
+            placeholder='Attr Name (text)'
+            name='nameAttr'
+            value={nameAttr}
+            onChange={handleChange}
+            id='nameAttr'
+          />
+          <Form.Dropdown
+            label='Type'
+            onChange={handleChange}
+            fluid
+            options={options}
+            placeholder='Choose a type'
+            selection
+            name='typeAttr'
+            value={typeAttr}
+            id='typeAttr'
+            style={{ width: '10em' }}
+          />
+          {typeAttr === 'Number' ?
+            <Form.Group widths='equal'>
+              <Form.Input
+                icon='dollar'
+                iconPosition='left'
+                label='Value'
+                placeholder='Value (number)'
+                type="number"
+                name='numberValue'
+                value={numberValue}
+                onChange={handleChange}
+                id='numberValue'
+                style={{ width: '10em' }}
+              />
+              <Form.Input
+                icon='sun'
+                iconPosition='left'
+                label='Max Value'
+                placeholder='Max Value (number)'
+                type="number"
+                name='numberMax'
+                value={numberMax}
+                onChange={handleChange}
+                id='numberMax'
+                style={{ width: '10em' }}
+              />
+            </Form.Group>
+            : <Form.Input
+              icon='dollar'
+              iconPosition='left'
+              label='Value'
+              placeholder='Value (text)'
+              name='textValue'
+              value={textValue}
+              onChange={handleChange}
+              key='textValue'
+            />
+          }
+          <Form.Button
+            icon='add'
+            label='Add'
+            onClick={addAttribute}
+            type='button'
+          />
+        </Form.Group>
+      </div>
+    )
+  }
+
+  const NewOfferForm = ({ nfaPurchased, setNfaPurchased }) => {
+    const [fa, setFa] = useState('')
+    const [price, setPrice] = useState('')
+    const [attributes, setAttributes] = useState([])
+
+    const addOffer = (e) => {
+      e.preventDefault();
+      const offers = [...nfaPurchased?.offers || []]
+      const newOffer = {
+        fa,
+        price,
+        attributes,
+      }
+      offers.push(newOffer)
+      setNfaPurchased({
+        offers
+      })
+      setShowNewOfferForm(false)
+      clearForm()
+    }
+
+    const clearForm = () => {
+      setFa('')
+      setPrice('')
+      setAttributes([])
+    }
+
+    const handleChange = (e, { name, value }) => {
+      switch (name) {
+        case 'fa':
+          setFa(value)
+          break;
+        case 'price':
+          setPrice(value)
+          break;
+        default:
+          break;
+      }
+    }
+    return (
+      <div>
+        <Form.Group key='o0' widths='equal'>
+          <Form.Field>
+            <label>FA id</label>
+            <FaSelector selectedFa={fa} setSelectedFa={(v) => handleChange(null, { name: 'fa', value: v })} />
+          </Form.Field>
+          <Form.Input
+            icon='dollar'
+            iconPosition='left'
+            label='Price'
+            placeholder='Price (number)'
+            name='price'
+            value={price}
+            onChange={handleChange}
+            key='o2'
+            type="number"
+          />
+        </Form.Group>
+        <NewAttributeForm attributes={attributes} setAttributes={setAttributes} />
+        <Form.Group>
+          <Form.Button
+            content='Confirm'
+            onClick={addOffer}
+            type='button'
+          />
+          <Form.Button
+            content='Cancel'
+            onClick={() => { setShowNewOfferForm(false); clearForm(); }}
+            type='button'
+          />
+        </Form.Group>
+      </div>
+    )
+  }
+
+  // useEffect(addOffer, [offers])
+
+  return (
+    <div>
+      <OffersTable />
+      {showNewOfferForm ?
+        <NewOfferForm nfaPurchased={nfaPurchased} setNfaPurchased={setNfaPurchased} />
+        :
+        <Button
+          icon
+          labelPosition='left'
+          // primary
+          size='small'
+          onClick={doShowNewOfferForm}
+        >
+          <Icon name='add' /> Add Offer
+        </Button>
+      }
+      <TxButton
+        label="Update Purchased"
+        type="SIGNED-TX"
+        setStatus={setStatus}
+        attrs={{
+          palletRpc: 'nonFungibleAssets',
+          callable: 'setCharacteristic',
+          inputParams: [nfaOwner, nfaClass, { Purchased: nfaPurchased }],
+          paramFields: ['organization_id', 'class_id', 'characteristic'],
+        }}
+      />
+      <TxButton
+        label="Remove Purchased"
+        type="SIGNED-TX"
+        setStatus={setStatus}
+        color='red'
+        attrs={{
+          palletRpc: 'nonFungibleAssets',
+          callable: 'setCharacteristic',
+          inputParams: [nfaOwner, nfaClass, { Purchased: null }],
+          paramFields: ['organization_id', 'class_id', 'characteristic'],
+        }}
+      />
+    </div>
   )
 }
 
@@ -736,6 +1066,155 @@ function NfaRemove(props) {
       </Form.Field>
       <div style={{ overflowWrap: 'break-word' }}>{status}</div>
     </Form>
+  )
+}
+
+/**
+ * Returns a list of all available mechanics
+ */
+function getMechanicsList() {
+  return [
+    'Purchased',
+    'Bettor',
+  ]
+}
+
+/**
+ * Returns attribute of Some(value).
+ * If None, return ''
+ * @param {*} value 
+ * @param {*} attr 
+ * @returns 
+ */
+// function attrFromSome(value, attr) {
+//   return value && attr && value.isSome ? value.unwrapOr({})[attr].toHuman() : ''
+// }
+
+function NfaEdit(props) {
+  const { api, } = useSubstrateState()
+
+  const [org, setOrg] = useState('')
+  const [selectedClass, setSelectedClass] = useState('')
+  const [selectedMechanic, setSelectedMechanic] = useState('')
+  // nfa details //
+  const [nfaName, setNfaName] = useState('')
+  const [nfaInstances, setNfaInstances] = useState('')
+  const [nfaAttributes, setNfaAttributes] = useState('')
+  const [nfaOwner, setNfaOwner] = useState('')
+  const [nfaPurchased, setNfaPurchased] = useState('')
+  const [nfaBettor, setNfaBettor] = useState('')
+
+  const [status, setStatus] = useState('')
+
+  const mechanicNames = getMechanicsList().map(m => {
+    return {
+      key: m,
+      value: m,
+      text: m,
+      icon: 'settings',
+    }
+  })
+
+  const fetchNfaDetails = () => {
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.nonFungibleAssets.classes(selectedClass,
+        detail => {
+          const d = detail.toHuman()
+          setNfaName(d.name)
+          setNfaInstances(d.instances)
+          setNfaAttributes(d.attributes)
+          setNfaOwner(d.owner)
+          setNfaPurchased(d.purchased)
+          setNfaBettor(d.bettor)
+        })
+    }
+    asyncFetch()
+    return () => { unsub && unsub() }
+  }
+  useEffect(fetchNfaDetails, [api, selectedClass])
+
+  const FormMechnicPurchased = (
+    <div>
+      <Form.Field>
+        <Checkbox
+          label='Purchased'
+          onChange={(_, { checked }) => setNfaPurchased(checked)}
+          checked={!!nfaPurchased}
+        />
+      </Form.Field>
+      {nfaPurchased ?
+        <Form.Field>
+          <PurchasedEditor nfaPurchased={nfaPurchased} setNfaPurchased={setNfaPurchased} nfaClass={selectedClass} nfaOwner={nfaOwner} setStatus={setStatus} />
+        </Form.Field>
+        : null
+      }
+    </div>
+  );
+  const FormMechnicBettor = (
+    <div>FormMechnicBettor</div>
+  );
+
+  const mechanicsUI = [
+    {
+      key: 'Purchased',
+      title: { content: nfaPurchased ? 'Purchased Mechanic *' : 'Purchased Mechanic' },
+      content: { content: FormMechnicPurchased },
+    },
+    {
+      key: 'Bettor',
+      title: { content: nfaBettor ? 'Bettor Mechanic *' : 'Bettor Mechanic' },
+      content: { content: FormMechnicBettor },
+    },
+  ]
+
+  return (
+    <div>
+      <Form>
+        <Form.Field>
+          <label>Organization</label>
+          <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'} />
+        </Form.Field>
+        <Form.Field>
+          <label>NFA id</label>
+          <NfaSelector selectedNfa={selectedClass} setSelectedNfa={setSelectedClass} />
+        </Form.Field>
+        <Form.Input label='Name' readOnly placeholder='Name of NFT' value={nfaName} />
+        <Form.Group widths='equal'>
+          <Form.Input label='Instances' readOnly placeholder='Number of instances' value={nfaInstances} />
+          <Form.Input label='Attributes' readOnly placeholder='Number of attributes' value={nfaAttributes} />
+        </Form.Group>
+        <Accordion as={Form.Field} panels={mechanicsUI} styled fluid />
+        <Form.Field>
+          <label>Mechanic</label>
+          <Dropdown
+            placeholder={"Select mechanics"}
+            fluid
+            selection
+            search
+            clearable
+            options={mechanicNames}
+            value={selectedMechanic}
+            onChange={(e, { name }) => setSelectedMechanic(name)}
+          />
+        </Form.Field>
+        <Form.Field>
+          <TxButton
+            label="Update FA"
+            type="SIGNED-TX"
+            setStatus={setStatus}
+            attrs={{
+              palletRpc: 'nonFungibleAssets',
+              callable: 'destroy',
+              inputParams: [org, selectedClass],
+              paramFields: ['organization_id', 'class_id'],
+            }}
+          />
+        </Form.Field>
+        <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+      </Form>
+    </div>
+
   )
 }
 
