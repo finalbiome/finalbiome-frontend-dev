@@ -23,9 +23,9 @@ function BettorEditor({
   const [drawOutcome, setDrawOutcome] = useState('')
 
   const options = [
-    { key: 0, text: 'Win', value: 'Win', icon: 'sun' },
-    { key: 1, text: 'Lose', value: 'Lose', icon: 'diamond' },
-    { key: 2, text: 'Keep', value: 'Keep', icon: 'diamond' },
+    { key: 0, text: 'Win', value: 'Win', icon: 'beer' },
+    { key: 1, text: 'Keep', value: 'Keep', icon: 'minus' },
+    { key: 2, text: 'Lose', value: 'Lose', icon: 'trash' },
   ]
 
   const handleChange = (e, { name, value }) => {
@@ -312,7 +312,7 @@ function OutcomesForm({
           type='button'
         />
         <Form.Button
-          icon='add'
+          icon='close'
           label='Cancel'
           onClick={() => { setShowForm(false); clearForm(); }}
           type='button'
@@ -420,7 +420,7 @@ function WinningForm({
           type='button'
         />
         <Form.Button
-          icon='add'
+          icon='close'
           label='Cancel'
           onClick={() => { setShowForm(false); clearForm(); }}
           type='button'
@@ -461,7 +461,7 @@ function BettorView({
           onClick={() => setShowNewBettorForm(true)}
           style={{ marginTop: '1em' }}
         >
-          <Icon name='add' /> {nfaBettor ? "Edit" : "Add"} Bettor
+          <Icon name={nfaBettor ? "edit" : "add"} /> {nfaBettor ? "Replace" : "Add"} Bettor
         </Button>
       )}
     </div>
