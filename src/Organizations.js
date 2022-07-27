@@ -13,6 +13,7 @@ import {
 
 import { useSubstrateState } from './substrate-lib'
 import { TxButton } from './substrate-lib/components'
+import { BettorView } from './NfaBettor'
 
 const acctAddr = acct => (acct ? acct.address : '')
 
@@ -490,7 +491,7 @@ function FaSelector({
     asyncFetch()
     return () => {unsub && unsub()}
   }
-  useEffect(fetchAllFaIds, [api, assetIds])
+  useEffect(fetchAllFaIds, [api])
 
   const fillOptions = () => {
     setAssetOptions(assetIds.map(a => {
@@ -1152,7 +1153,9 @@ function NfaEdit(props) {
     </div>
   );
   const FormMechnicBettor = (
-    <div>FormMechnicBettor</div>
+    <div>
+      <BettorView nfaBettor={nfaBettor} nfaClass={selectedClass} nfaOwner={nfaOwner} setStatus={setStatus} />
+    </div>
   );
 
   const mechanicsUI = [
@@ -1342,3 +1345,5 @@ export default function Organizations(props) {
     <Main {...props} />
   ) : null
 }
+
+export { NfaSelector, FaSelector }
