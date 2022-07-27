@@ -23,6 +23,7 @@ import TemplateModule from './TemplateModule'
 import Transfer from './Transfer'
 import Upgrade from './Upgrade'
 import Organizations from './Organizations'
+import Gamer from './Gamer'
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
@@ -98,6 +99,12 @@ function Main() {
           {menuActiveItem === 'developer' ?
             <Grid.Row>
               <Organizations />
+            </Grid.Row>
+            : null
+          }
+          {menuActiveItem === 'gamer' ?
+            <Grid.Row>
+              <Gamer />
             </Grid.Row>
             : null
           }
