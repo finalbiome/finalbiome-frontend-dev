@@ -34,9 +34,12 @@ function NfaBalance(params) {
       {nfaIds.length === 0 ? (
         <Label basic color="yellow">
           No NFA to be shown
+          <Icon link name='refresh' style={{ marginLeft: 'auto' }} color='grey' onClick={handleRefresh} />
         </Label>
       ) : (
-        <Table celled striped size="small">
+          <div style={{ clear: 'both', overflow: 'auto', maxHeight: 200 }}>
+            <Table celled striped size="small"
+            >
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell style={{display: 'flex'}}>NFA <Icon link name='refresh' style={{marginLeft: 'auto'}} color='grey' onClick={handleRefresh} /></Table.HeaderCell>
@@ -52,6 +55,7 @@ function NfaBalance(params) {
             ))}
           </Table.Body>
         </Table>
+          </div>
       )}
     </Grid.Column>
   )
