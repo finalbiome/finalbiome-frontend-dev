@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSubstrateState } from '../substrate-lib'
-import { Dropdown } from 'semantic-ui-react'
+import { Dropdown, Label } from 'semantic-ui-react'
 
 
 function OfferSelector({
@@ -40,15 +40,23 @@ function OfferSelector({
   useEffect(fetchClassOfffers, [api, nfaClass])
 
   return (
-    <Dropdown
-      placeholder={'Select an offer...'}
-      fluid
-      selection
-      clearable
-      options={offerOptions}
-      // value={selectedOffer}
-      onChange={handleChange}
-    />
+    <>
+      {offerOptions.length > 0 ? (
+        <Dropdown
+          placeholder={'Select an offer...'}
+          fluid
+          selection
+          clearable
+          options={offerOptions}
+          // value={selectedOffer}
+          onChange={handleChange}
+        />
+      ) : (
+        <Label basic color="yellow">
+          No offers found for this NFA
+        </Label>
+      )}
+    </>
   )
 }
 
