@@ -35,7 +35,7 @@ function Main(props) {
 
           setEventFeed(e => [
             {
-              key: keyNum,
+              key: keyNum + Math.random().toString(),
               icon: evHuman.section === 'organizationIdentity' ? 'building' : 'bell',
               summary: evName,
               content: evParams,
