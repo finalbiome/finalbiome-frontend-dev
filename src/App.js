@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { createRef, useState } from 'react'
 import {
   Container,
@@ -28,12 +29,31 @@ import Gamer from './Gamer'
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
   const [menuActiveItem, setMenuActiveItem] = useState('home')
+  const [splash, setSplash] = useState(false)
+  const [splashText, setSplashText] = useState('')
 
-  const loader = text => (
-    <Dimmer active>
-      <Loader size="small">{text}</Loader>
-    </Dimmer>
-  )
+  if (keyringState !== 'READY') return (
+    <div></div>
+  );
+
+
+
+  const loader = (text) => {
+    if (splashText === text) return;
+    setSplashText(text)
+    setSplash(!!text)
+  }
+
+
+  const Splash = ({
+    text
+  }) => {
+    return (
+      <Dimmer active={splash}>
+        <Loader size="small">{text}</Loader>
+      </Dimmer>
+    )
+  }
 
   const message = errObj => (
     <Grid centered columns={2} padded>
@@ -50,66 +70,72 @@ function Main() {
   )
 
   if (apiState === 'ERROR') return message(apiError)
-  else if (apiState !== 'READY') return loader('Connecting to FinalBiome')
-
-  if (keyringState !== 'READY') {
-    return loader(
+  else if (apiState !== 'READY') loader('Connecting to FinalBiome')
+  else if (keyringState !== 'READY') {
+    loader(
       "Loading accounts (please review any extension's authorization)"
     )
+  }
+  if (keyringState === 'READY') {
+    loader('')
   }
 
   const contextRef = createRef()
 
   return (
-    <div ref={contextRef}>
-      <Sticky context={contextRef}>
-        <Container>
-          <AccountSelector changeMenuItem={(name) => setMenuActiveItem(name)} currentMenuItem={menuActiveItem} />
-        </Container>
-      </Sticky>
-      <Container>
-        <Grid stackable columns="equal">
-          <Grid.Row stretched>
-            <NodeInfo />
-            <Metadata />
-            <BlockNumber />
-            <BlockNumber finalized />
-          </Grid.Row>
-          <Grid.Row>
-            <Events />
-          </Grid.Row>
-          {menuActiveItem === 'home' ?
-            <div>
+    <div>
+      {!splash ? (
+        <div ref={contextRef}>
+          <Sticky context={contextRef}>
+            <Container>
+              <AccountSelector changeMenuItem={(name) => setMenuActiveItem(name)} currentMenuItem={menuActiveItem} />
+            </Container>
+          </Sticky>
+          <Container>
+            <Grid stackable columns="equal">
               <Grid.Row stretched>
-                <Balances />
+                <NodeInfo />
+                <Metadata />
+                <BlockNumber />
+                <BlockNumber finalized />
               </Grid.Row>
               <Grid.Row>
-                <Transfer />
-                <Upgrade />
-              </Grid.Row>
-              <Grid.Row>
-                <Interactor />
                 <Events />
               </Grid.Row>
-              <Grid.Row>
-                <TemplateModule />
-              </Grid.Row>
-            </div> : null
-          }
-          {menuActiveItem === 'developer' ?
-            <Grid.Row>
-              <Organizations />
-            </Grid.Row>
-            : null
-          }
-          {menuActiveItem === 'gamer' ?
-            <Grid.Row>
-              <Gamer />
-            </Grid.Row>
-            : null
-          }
-        </Grid>
-      </Container>
+              {menuActiveItem === 'home' ?
+                <div>
+                  <Grid.Row stretched>
+                    <Balances />
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Transfer />
+                    <Upgrade />
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Interactor />
+                    <Events />
+                  </Grid.Row>
+                  <Grid.Row>
+                    <TemplateModule />
+                  </Grid.Row>
+                </div> : null
+              }
+              {menuActiveItem === 'developer' ?
+                <Grid.Row>
+                  <Organizations />
+                </Grid.Row>
+                : null
+              }
+              {menuActiveItem === 'gamer' ?
+                <Grid.Row>
+                  <Gamer />
+                </Grid.Row>
+                : null
+              }
+            </Grid>
+          </Container>
+        </div>
+      ) : <Splash text={splashText} />}
       <DeveloperConsole />
     </div>
   )
