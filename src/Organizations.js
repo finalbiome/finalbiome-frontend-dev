@@ -15,6 +15,8 @@ import { useSubstrateState } from './substrate-lib'
 import { TxButton } from './substrate-lib/components'
 import { BettorView } from './NfaBettor'
 import { PurchasedView } from './NfaPurchased'
+import { TxStatusView } from './components/TxStatusView'
+import { NfaSelector } from './components/NfaSelector'
 
 const acctAddr = acct => (acct ? acct.address : '')
 
@@ -75,7 +77,7 @@ function CreateOrganization(props) {
             }}
           />
         </Form.Field>
-        <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+        <TxStatusView status={status} setStatus={setStatus} />
       </Form>
     </Segment> 
     ) : null
@@ -281,7 +283,7 @@ function ManageMembers(props) {
           }}
         />
       </Button.Group>
-      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+      <TxStatusView status={status} setStatus={setStatus} />
     </Segment>
   ) : null
 }
@@ -465,7 +467,7 @@ function FaCreate(props) {
           }}
         />
       </Form.Field>
-      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+      <TxStatusView status={status} setStatus={setStatus} />
     </Form>
   )
 }
@@ -547,7 +549,7 @@ function FaRemove(props) {
           }}
         />
       </Form.Field>
-      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+      <TxStatusView status={status} setStatus={setStatus} />
     </Form>
   )
 }
@@ -637,7 +639,7 @@ function NfaList(props) {
                   <AccountView address={asset.owner} />
                 </Table.Cell>
                 <Table.Cell width={3}>
-                  {asset.supply}
+                  {asset.instances}
                 </Table.Cell>
                 <Table.Cell width={1}
                   title={JSON.stringify(asset.human, null, 2)}>
@@ -708,7 +710,7 @@ function NfaCreate(props) {
           }}
         />
       </Form.Field>
-      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+      <TxStatusView status={status} setStatus={setStatus} />
     </Form>
   )
 }
@@ -740,7 +742,7 @@ function NfaRemove(props) {
           }}
         />
       </Form.Field>
-      <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+      <TxStatusView status={status} setStatus={setStatus} />
     </Form>
   )
 }
@@ -877,60 +879,10 @@ function NfaEdit(props) {
             }}
           />
         </Form.Field>
-        <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+        <TxStatusView status={status} setStatus={setStatus} />
       </Form>
     </div>
 
-  )
-}
-
-function NfaSelector({
-  selectedNfa,
-  setSelectedNfa,
-  placeholder = 'Select NFA'
-}) {
-  const { api, } = useSubstrateState()
-  const [classOptions, setClassOptions] = useState([])
-  const [classIds, setClassIds] = useState([])
-
-  const handleChange = (e, { value }) => setSelectedNfa(value)
-
-  const fetchAllFaIds = () => {
-    let unsub = null
-    const asyncFetch = async () => {
-      unsub = await api.query.nonFungibleAssets.classes.keys(
-        keys => {
-          setClassIds(keys.map(k => k.toHuman()[0]))
-        })
-    }
-    asyncFetch()
-    return () => { unsub && unsub() }
-  }
-  useEffect(fetchAllFaIds, [api, classIds])
-
-  const fillOptions = () => {
-    setClassOptions(classIds.map(a => {
-      return {
-        key: a,
-        value: a,
-        text: a,
-        icon: 'diamond',
-      }
-    }))
-  }
-  useEffect(fillOptions, [classIds])
-
-  return (
-    <Dropdown
-      placeholder={placeholder}
-      fluid
-      selection
-      search
-      clearable
-      options={classOptions}
-      value={selectedNfa}
-      onChange={handleChange}
-    />
   )
 }
 
@@ -1009,4 +961,4 @@ export default function Organizations(props) {
   ) : null
 }
 
-export { NfaSelector, FaSelector }
+export { FaSelector }

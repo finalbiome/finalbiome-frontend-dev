@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Input, Grid } from 'semantic-ui-react'
+import { TxStatusView } from './components/TxStatusView'
 import { TxButton } from './substrate-lib/components'
 
 export default function Main(props) {
@@ -48,7 +49,7 @@ export default function Main(props) {
             }}
           />
         </Form.Field>
-        <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+        <TxStatusView status={status} setStatus={setStatus} />
       </Form>
     </Grid.Column>
   )

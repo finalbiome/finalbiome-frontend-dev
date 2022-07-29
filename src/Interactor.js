@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Grid, Form, Dropdown, Input, Label } from 'semantic-ui-react'
+import { TxStatusView } from './components/TxStatusView'
 
 import { useSubstrateState } from './substrate-lib'
 import { TxButton, TxGroupButton } from './substrate-lib/components'
@@ -254,7 +255,7 @@ function Main(props) {
             }}
           />
         </Form.Field>
-        <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+        <TxStatusView status={status} setStatus={setStatus} />
       </Form>
     </Grid.Column>
   )

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 
-import { Form, FormField, Grid, Header, Message, } from 'semantic-ui-react'
+import { Form, FormField, Grid, Header, } from 'semantic-ui-react'
 import { AccountSelector } from './components/AccountSelector'
 import { MechanicsDropdown } from './components/MechanicsDropdown'
 import { NfaSelector } from './components/NfaSelector'
 import { OfferSelector } from './components/OfferSelector'
+import { TxStatusView } from './components/TxStatusView'
 import { TxButton } from './substrate-lib/components'
 
 function ExecuteMechanic(params) {
@@ -36,8 +37,7 @@ function ExecuteMechanic(params) {
           <>Bettor Form</>
         ) : null}
       </Form>
-      <Message hidden={!status}>{status}</Message>
-      {/* <div style={{ overflowWrap: 'break-word' }}>{status}</div> */}
+      <TxStatusView status={status} setStatus={setStatus} />
     </Grid.Column>
   )
 }
