@@ -101,9 +101,16 @@ function TxButton({
     const transformed = transformParams(paramFields, inputParams)
     // transformed can be empty parameters
 
-    const txExecute = transformed
+    let txExecute
+    try {
+      txExecute = transformed
       ? api.tx[palletRpc][callable](...transformed)
       : api.tx[palletRpc][callable]()
+    } catch (error) {
+      setStatus(error.toString())
+      console.error(error)
+      return
+    }
 
     const unsub = await txExecute
       .signAndSend(...fromAcct, txResHandler)
