@@ -39,11 +39,22 @@ function NfaInstanceView({
 
     let unsub = null
     const asyncFetch = async () => {
-      let attrKeysClass = await api.query.nonFungibleAssets.attributes.keys(classId, null)
-      let attrKeys = attrKeysClass.map(key => key.args.map(k => k.toHuman()));
-      let attrKeysInstance = await api.query.nonFungibleAssets.attributes.keys(classId, instanceId)
-      attrKeys = [...attrKeys, ...attrKeysInstance.map(key => key.args.map(k => k.toHuman()))]
       const attributes = []
+      // fetch attributes from the class
+      let attrKeysClass = await api.query.nonFungibleAssets.classAttributes.keys(classId)
+      let attrKeys = attrKeysClass.map(key => key.args.map(k => k.toHuman()));
+      let classAttrs = await api.query.nonFungibleAssets.classAttributes.multi(attrKeys);
+      classAttrs.forEach((entry, idx) => {
+        const attr = {
+          name: attrKeys[idx][2],
+          value: entry.toHuman(),
+          inInstance: false
+        }
+        attributes.push(attr)
+      })
+
+      let attrKeysInstance = await api.query.nonFungibleAssets.attributes.keys(instanceId)
+      attrKeys = attrKeysInstance.map(key => key.args.map(k => k.toHuman()))
 
       unsub = await api.query.nonFungibleAssets.attributes.multi(attrKeys,
         entries => {
@@ -51,7 +62,7 @@ function NfaInstanceView({
             const attr = {
               name: attrKeys[idx][2],
               value: entry.toHuman(),
-              inInstance: !!attrKeys[idx][1]
+              inInstance: true
             }
             attributes.push(attr)
           })
@@ -97,8 +108,8 @@ function Attributes({
           <Popup.Header>Attributes</Popup.Header>
           <Popup.Content>
             <List>
-              {attributes.map(a => (
-                  <List.Item key={`attr-popup-${a.name}-${a.value}`}>
+              {attributes.map((a, i) => (
+                  <List.Item key={`attr-popup-${a.name}-${a.value}-${i}`}>
                     <List.Icon color={a.inInstance ? 'blue' : 'grey'} name='tag' />
                     <List.Content>
                       <AttributeView name={a.name} value={a.value} />
