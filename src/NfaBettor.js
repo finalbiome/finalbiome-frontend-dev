@@ -183,6 +183,7 @@ function OutcomesView({
           <Table.Row>
             <Table.HeaderCell>Outcomes</Table.HeaderCell>
             <Table.HeaderCell>Probability</Table.HeaderCell>
+            <Table.HeaderCell>Result</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -190,6 +191,7 @@ function OutcomesView({
             <Table.Row key={'outcms-t-' + i}>
               <Table.Cell>{o.name}</Table.Cell>
               <Table.Cell>{o.probability}</Table.Cell>
+              <Table.Cell>{o.result}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
@@ -252,6 +254,13 @@ function OutcomesForm({
 }) {
   const [name, setName] = useState('')
   const [probability, setProbability] = useState(0)
+  const [result, setResult] = useState('')
+
+  const options = [
+    { key: 0, text: 'Win', value: 'Win', icon: 'beer'},
+    { key: 1, text: 'Draw', value: 'Draw', icon: 'minus' },
+    { key: 2, text: 'Lose', value: 'Lose', icon: 'trash' },
+  ]
 
   const handleChange = (e, { name, value }) => {
     switch (name) {
@@ -261,6 +270,9 @@ function OutcomesForm({
       case 'probability':
         setProbability(value)
         break;
+      case 'result':
+        setResult(value)
+        break;
       default:
         break;
     }
@@ -269,7 +281,8 @@ function OutcomesForm({
   const addOutcome = () => {
     const outcome = {
       name,
-      probability
+      probability,
+      result,
     }
     const newOucomes = [...outcomes, outcome]
     setOutcomes(newOucomes)
@@ -304,6 +317,19 @@ function OutcomesForm({
         value={probability}
         onChange={handleChange}
         id='probability'
+      />
+      <Form.Dropdown
+        label='Result'
+        placeholder='Result'
+        fluid
+        selection
+        options={options}
+        name='result'
+        type="number"
+        value={result}
+        onChange={handleChange}
+        id='result'
+        style={{ width: '10em' }}
       />
       <Form.Group>
         <Form.Button
