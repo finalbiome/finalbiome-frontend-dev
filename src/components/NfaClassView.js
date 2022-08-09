@@ -5,17 +5,17 @@ import { AttributesView } from './AttributesView'
 import { BettorHint } from './BettorHint'
 import { PurchasedHint } from './PurchasedHint'
 
-function NfaInstanceView({
-  nfaInstanceId
+function NfaClassView({
+  nfaClassId
 }) {
   const { api, } = useSubstrateState()
   const [classDetails, setClassDetails] = useState({})
   const [classAttributes, setClassAttributes] = useState([])
 
   const fetchClassDetails = () => {
-    if (!nfaInstanceId) return;
+    if (!nfaClassId) return;
 
-    const classId = nfaInstanceId[1]
+    const classId = nfaClassId
 
     let unsub = null
     const asyncFetch = async () => {
@@ -32,13 +32,12 @@ function NfaInstanceView({
     asyncFetch()
     return () => { unsub && unsub() }
   }
-  useEffect(fetchClassDetails, [api, nfaInstanceId])
+  useEffect(fetchClassDetails, [api, nfaClassId])
 
   const fetchClassAttributes = () => {
-    if (!nfaInstanceId) return;
+    if (!nfaClassId) return;
 
-    const classId = nfaInstanceId[1]
-    const instanceId = nfaInstanceId[2]
+    const classId = nfaClassId
 
     let unsub = null
     const asyncFetch = async () => {
@@ -46,36 +45,22 @@ function NfaInstanceView({
       // fetch attributes from the class
       let attrKeysClass = await api.query.nonFungibleAssets.classAttributes.keys(classId)
       let attrKeys = attrKeysClass.map(key => key.args.map(k => k.toHuman()));
-      let classAttrs = await api.query.nonFungibleAssets.classAttributes.multi(attrKeys);
-      classAttrs.forEach((entry, idx) => {
-        const attr = {
-          name: attrKeys[idx][1],
-          value: entry.toHuman(),
-          inInstance: false
-        }
-        attributes.push(attr)
-      })
-
-      let attrKeysInstance = await api.query.nonFungibleAssets.attributes.keys(instanceId)
-      attrKeys = attrKeysInstance.map(key => key.args.map(k => k.toHuman()))
-
-      unsub = await api.query.nonFungibleAssets.attributes.multi(attrKeys,
-        entries => {
-          entries.forEach((entry, idx) => {
-            const attr = {
-              name: attrKeys[idx][1],
-              value: entry.toHuman(),
-              inInstance: true
-            }
-            attributes.push(attr)
-          })
-          setClassAttributes(attributes)
+      unsub = await api.query.nonFungibleAssets.classAttributes.multi(attrKeys, entries => {
+        entries.forEach((entry, idx) => {
+          const attr = {
+            name: attrKeys[idx][1],
+            value: entry.toHuman(),
+            inInstance: false
+          }
+          attributes.push(attr)
         })
+        setClassAttributes(attributes)
+      });
     }
     asyncFetch()
     return () => { unsub && unsub() }
   }
-  useEffect(fetchClassAttributes, [api, nfaInstanceId])
+  useEffect(fetchClassAttributes, [api, nfaClassId])
 
   return (
     <Label>
@@ -100,5 +85,5 @@ function Details({
 }
 
 export {
-  NfaInstanceView
+  NfaClassView
 }
