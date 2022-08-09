@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Form, FormField, Grid, Header, } from 'semantic-ui-react'
 import { AccountSelector } from './components/AccountSelector'
 import { MechanicsDropdown } from './components/MechanicsDropdown'
+import { NfaInstanceSelector } from './components/NfaInstanceSelector'
 import { NfaSelector } from './components/NfaSelector'
 import { OfferSelector } from './components/OfferSelector'
 import { TxStatusView } from './components/TxStatusView'
@@ -34,7 +35,7 @@ function ExecuteMechanic(params) {
           <PurchasedParams setStatus={setStatus} done={mechanicFinished} />
         ) : null}
         {selectedMechanic === 'Bettor' ? (
-          <>Bettor Form</>
+          <BettorParams setStatus={setStatus} done={mechanicFinished} />
         ) : null}
       </Form>
       <TxStatusView status={status} setStatus={setStatus} />
@@ -83,6 +84,52 @@ function PurchasedParams({
             callable: 'execBuyNfa',
             inputParams: [selectedNfa, selectedOffer],
             paramFields: ['class_id', 'offer_id'],
+          }}
+          txOnClickHandler={handleTrx}
+        />
+        <Form.Button
+          basic
+          content='Cancel'
+          onClick={handleTrx}
+          type='button'
+        />
+      </Form.Group>
+    </>
+  )
+}
+
+function BettorParams({
+  setStatus,
+  done
+}) {
+  const [selectedNfaInstance, setSelectedNfaInstance] = useState([])
+
+  const handleTrx = (unsub => {
+    if (unsub && typeof unsub === 'function') {
+      unsub()
+    }
+
+    if (done && typeof done === 'function') {
+      done()
+    }
+  })
+
+  return (
+    <>
+      <FormField>
+        <label>NFA Class</label>
+        <NfaInstanceSelector selectedNfaInstance={selectedNfaInstance} setSelectedNfaInstance={setSelectedNfaInstance} />
+      </FormField>
+      <Form.Group>
+        <TxButton
+          label="Execute"
+          type="SIGNED-TX"
+          setStatus={setStatus}
+          attrs={{
+            palletRpc: 'mechanics',
+            callable: 'execBet',
+            inputParams: [selectedNfaInstance[1], selectedNfaInstance[2]],
+            paramFields: ['class_id', 'asset_id'],
           }}
           txOnClickHandler={handleTrx}
         />
