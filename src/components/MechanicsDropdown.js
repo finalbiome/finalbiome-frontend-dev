@@ -27,8 +27,8 @@ function MechanicsDropdown({
       placeholder={"Select mechanic"}
       fluid
       selection
-      search
-      clearable
+      // search
+      // clearable
       options={mechanicsOptions}
       value={selectedMechanic}
       onChange={(e, { value }) => setSelectedMechanic(value)}

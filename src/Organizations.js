@@ -17,6 +17,7 @@ import { BettorView } from './NfaBettor'
 import { PurchasedView } from './NfaPurchased'
 import { TxStatusView } from './components/TxStatusView'
 import { NfaSelector } from './components/NfaSelector'
+import { NfaClassView } from './components/NfaClassView'
 
 const acctAddr = acct => (acct ? acct.address : '')
 
@@ -51,10 +52,7 @@ function CreateOrganization(props) {
 
   return currentAccount && !isOrganization ? (
     <Segment>
-      <Header as="h3">Make {currentAccount.meta.name.toUpperCase()} an organization</Header>
-      <Label pointing="left">
-        {currentAccount.meta.name}
-      </Label>
+      <Header as="h3">Make {currentAccount.meta.name.toUpperCase()} a game</Header>
       <Form>
         <Form.Field>
           <Input
@@ -128,7 +126,7 @@ function OrganizationsList(props) {
   return (
     // <Grid.Column>
     <div>
-      <Header as='h2'>Organizations</Header>
+      <Header as='h2'>Manage Games</Header>
       {organizations.length === 0 ? (
         <Label basic color="yellow">
           No accounts to be shown
@@ -251,7 +249,7 @@ function ManageMembers(props) {
 
   return currentAccount && currentAccount.meta.org ? (
     <Segment>
-      <Header as="h3">Manage Members of Organization</Header>
+      <Header as="h3">Manage Members of the Game</Header>
       <AccountSelector selectedAccount={member} setSelectedAccount={setMember} />
       <br />
       <Button.Group>
@@ -291,7 +289,7 @@ function ManageMembers(props) {
 function FA(props) {
   return (
     <div>
-      <Header as='h2'>Fungible Assets</Header>
+      <Header as='h2'>Manage Fungible Assets</Header>
       <FaList />
       <FaManage />
     </div>
@@ -341,9 +339,9 @@ function FaList(props) {
 
   return (
     <div>
-      <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'}/>
+      <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       {assets.length === 0 ? (
-        <Label basic color="yellow">
+        <Label basic color="yellow" style={{ marginTop: '1em'}}>
           No fungible assets to be shown
         </Label>
       ) : (
@@ -424,7 +422,7 @@ function FaCreate(props) {
   return (
     <Form>
       <Form.Field>
-        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'}/>
+        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       </Form.Field>
       <Form.Field>
         <Input
@@ -530,7 +528,7 @@ function FaRemove(props) {
   return (
     <Form>
       <Form.Field>
-        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'}/>
+        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       </Form.Field>
       <Form.Field>
         <FaSelector selectedFa={selectedAsset} setSelectedFa={setSelectedAsset} />
@@ -557,7 +555,7 @@ function FaRemove(props) {
 function NFA(props) {
   return (
     <div>
-      <Header as='h2'>Non Fungible Assets</Header>
+      <Header as='h2'>Manage Non Fungible Assets</Header>
       <NfaList />
       <NfaManage />
     </div>
@@ -608,9 +606,9 @@ function NfaList(props) {
 
   return (
     <div>
-      <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'} />
+      <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       {classes.length === 0 ? (
-        <Label basic color="yellow">
+        <Label basic color="yellow" style={{ marginTop: '1em'}}>
           No non-fungible asset classes to be shown
         </Label>
       ) : (
@@ -620,14 +618,14 @@ function NfaList(props) {
               <Table.Cell width={2} textAlign="right">
                 <strong>Class Id</strong>
               </Table.Cell>
-              <Table.Cell width={10}>
-                <strong>Owner</strong>
+              <Table.Cell width={4}>
+                <strong>Game Owner</strong>
               </Table.Cell>
-              <Table.Cell width={4} textAlign="right">
+              <Table.Cell width={2} textAlign="right">
                 <strong>Instances</strong>
               </Table.Cell>
-              <Table.Cell width={4} textAlign="right">
-                <strong>Raw</strong>
+              <Table.Cell width={4}>
+                <strong>Details</strong>
               </Table.Cell>
             </Table.Row>
             {classes.sort((a, b) => a.id[1] - b.id[1]).map(asset => (
@@ -635,15 +633,16 @@ function NfaList(props) {
                 <Table.Cell width={2} textAlign="right">
                   {asset.id[1]}
                 </Table.Cell>
-                <Table.Cell width={10}>
+                <Table.Cell width={4}>
                   <AccountView address={asset.owner} />
                 </Table.Cell>
-                <Table.Cell width={3}>
+                <Table.Cell width={2} textAlign="right">
                   {asset.instances}
                 </Table.Cell>
-                <Table.Cell width={1}
+                <Table.Cell width={4}
                   title={JSON.stringify(asset.human, null, 2)}>
-                  {JSON.stringify(asset.human)}
+                  {/* {JSON.stringify(asset.human)} */}
+                  <NfaClassView nfaClassId={asset.id[1]} />
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -686,7 +685,7 @@ function NfaCreate(props) {
   return (
     <Form>
       <Form.Field>
-        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'} />
+        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       </Form.Field>
       <Form.Field>
         <Input
@@ -723,7 +722,7 @@ function NfaRemove(props) {
   return (
     <Form>
       <Form.Field>
-        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'} />
+        <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       </Form.Field>
       <Form.Field>
         <NfaSelector selectedNfa={selectedClass} setSelectedNfa={setSelectedClass} />
@@ -748,16 +747,6 @@ function NfaRemove(props) {
 }
 
 /**
- * Returns a list of all available mechanics
- */
-function getMechanicsList() {
-  return [
-    'Purchased',
-    'Bettor',
-  ]
-}
-
-/**
  * Returns attribute of Some(value).
  * If None, return ''
  * @param {*} value 
@@ -773,7 +762,6 @@ function NfaEdit(props) {
 
   const [org, setOrg] = useState('')
   const [selectedClass, setSelectedClass] = useState('')
-  const [selectedMechanic, setSelectedMechanic] = useState('')
   // nfa details //
   const [nfaName, setNfaName] = useState('')
   const [nfaInstances, setNfaInstances] = useState('')
@@ -783,15 +771,6 @@ function NfaEdit(props) {
   const [nfaBettor, setNfaBettor] = useState('')
 
   const [status, setStatus] = useState('')
-
-  const mechanicNames = getMechanicsList().map(m => {
-    return {
-      key: m,
-      value: m,
-      text: m,
-      icon: 'settings',
-    }
-  })
 
   const fetchNfaDetails = () => {
     let unsub = null
@@ -841,7 +820,7 @@ function NfaEdit(props) {
       <Form>
         <Form.Field>
           <label>Organization</label>
-          <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Organization Account...'} />
+          <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
         </Form.Field>
         <Form.Field>
           <label>NFA id</label>
@@ -853,32 +832,6 @@ function NfaEdit(props) {
           <Form.Input label='Attributes' readOnly placeholder='Number of attributes' value={nfaAttributes} />
         </Form.Group>
         <Accordion as={Form.Field} panels={mechanicsUI} styled fluid />
-        <Form.Field>
-          <label>Mechanic</label>
-          <Dropdown
-            placeholder={"Select mechanics"}
-            fluid
-            selection
-            search
-            clearable
-            options={mechanicNames}
-            value={selectedMechanic}
-            onChange={(e, { name }) => setSelectedMechanic(name)}
-          />
-        </Form.Field>
-        <Form.Field>
-          <TxButton
-            label="Update FA"
-            type="SIGNED-TX"
-            setStatus={setStatus}
-            attrs={{
-              palletRpc: 'nonFungibleAssets',
-              callable: 'destroy',
-              inputParams: [org, selectedClass],
-              paramFields: ['organization_id', 'class_id'],
-            }}
-          />
-        </Form.Field>
         <TxStatusView status={status} setStatus={setStatus} />
       </Form>
     </div>
@@ -905,7 +858,7 @@ function Main(props) {
                 onClick={handleItemClick}
               >
                 <Icon name='game' />
-                Orgs
+                Games
               </Menu.Item>
 
               <Menu.Item

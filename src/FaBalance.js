@@ -58,7 +58,7 @@ function FaBalance(params) {
     <Grid.Column>
       <Header as="h2">Balance of FA</Header>
       {balances.length === 0 ? (
-        <Label basic color="yellow">
+        <Label basic color="yellow" style={{display: 'flex'}}>
           No FA to be shown
         </Label>
       ) : (

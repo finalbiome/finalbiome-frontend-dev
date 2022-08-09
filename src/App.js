@@ -93,32 +93,32 @@ function Main() {
           </Sticky>
           <Container>
             <Grid stackable columns="equal">
-              <Grid.Row stretched>
-                <NodeInfo />
-                <Metadata />
-                <BlockNumber />
-                <BlockNumber finalized />
-              </Grid.Row>
-              <Grid.Row>
-                <Events />
-              </Grid.Row>
               {menuActiveItem === 'home' ?
-                <div>
+                <>
                   <Grid.Row stretched>
-                    <Balances />
+                    <NodeInfo />
+                    <Metadata />
+                    <BlockNumber />
+                    <BlockNumber finalized />
                   </Grid.Row>
-                  <Grid.Row>
-                    <Transfer />
-                    <Upgrade />
-                  </Grid.Row>
-                  <Grid.Row>
-                    <Interactor />
-                    <Events />
-                  </Grid.Row>
-                  <Grid.Row>
-                    <TemplateModule />
-                  </Grid.Row>
-                </div> : null
+                  <div>
+                    <Grid.Row stretched>
+                      <Balances />
+                    </Grid.Row>
+                    <Grid.Row>
+                      <Transfer />
+                      <Upgrade />
+                    </Grid.Row>
+                    <Grid.Row>
+                      <Interactor />
+                      <Events />
+                    </Grid.Row>
+                    <Grid.Row>
+                      <TemplateModule />
+                    </Grid.Row>
+                  </div>
+                </> : null
+
               }
               {menuActiveItem === 'developer' ?
                 <Grid.Row>
@@ -132,6 +132,9 @@ function Main() {
                 </Grid.Row>
                 : null
               }
+              <Grid.Row>
+                <Events />
+              </Grid.Row>
             </Grid>
           </Container>
         </div>

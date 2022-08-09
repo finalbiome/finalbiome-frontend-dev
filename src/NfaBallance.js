@@ -32,7 +32,7 @@ function NfaBalance(params) {
     <Grid.Column>
       <Header as="h2">Balance of NFA</Header>
       {nfaIds.length === 0 ? (
-        <Label basic color="yellow">
+        <Label basic color="yellow" style={{display: 'flex'}}>
           No NFA to be shown
           <Icon link name='refresh' style={{ marginLeft: 'auto' }} color='grey' onClick={handleRefresh} />
         </Label>

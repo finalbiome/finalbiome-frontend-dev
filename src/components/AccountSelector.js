@@ -38,8 +38,8 @@ function AccountSelector({
       fluid
       selection
       // allowAdditions
-      search
-      clearable
+      // search
+      // clearable
       options={accountsOptions}
       // value={"selectedAccount"}
       onChange={handleChange}

@@ -110,9 +110,9 @@ function Main(props) {
         style={{ clear: 'both', overflow: 'auto', maxHeight: feedMaxHeight }}
       // events={eventFeed}
       >
-        {eventFeed.map(e =>
+        {eventFeed.map((e, i) =>
         (
-          <Feed.Event>
+          <Feed.Event key={`fe-${i}`}>
             <Feed.Label>
               <Icon name={e.icon} color={e.isError ? 'red' : 'black'} />
             </Feed.Label>
