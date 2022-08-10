@@ -414,7 +414,7 @@ function FaManage(params) {
 
   return (
     <Segment>
-      <Header as="h3">Manage of FA</Header>
+      <Header as="h3">Manage of Fungible Asset</Header>
       <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
     </Segment>
   )
@@ -469,6 +469,7 @@ function FaCreate(props) {
           type="string"
           onChange={(_, { value }) => setFaName(value)}
           value={faName}
+          placeholder='Name of Fungible Asset'
         />
       </Form.Field>
       <Form.Field>
@@ -487,6 +488,8 @@ function FaCreate(props) {
             type="number"
             onChange={(_, { value }) => setFaTopUppedSpeed(value)}
             value={faTopUppedSpeed}
+            placeholder='0'
+
           />
         </Form.Field>
         : null
@@ -497,6 +500,7 @@ function FaCreate(props) {
           type="number"
           onChange={(_, { value }) => setFaLocalCap(value)}
           value={faLocalCup}
+          placeholder='100'
         />
       </Form.Field>
       <Form.Field>
@@ -505,6 +509,8 @@ function FaCreate(props) {
           type="number"
           onChange={(_, { value }) => setFaGlobalCap(value)}
           value={faGlobalCup}
+          placeholder='1000'
+
         />
       </Form.Field>
       <Form.Field>
@@ -688,7 +694,7 @@ function NfaManage(params) {
 
   return (
     <Segment>
-      <Header as="h3">Manage of NFA</Header>
+      <Header as="h3">Manage of Non-fungible Asset</Header>
       <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
     </Segment>
   )
@@ -699,17 +705,24 @@ function NfaCreate(props) {
   const [nfaName, setNfaName] = useState('')
   const [status, setStatus] = useState('')
 
+  const handleTrx = (unsub) => {
+    setOrg('')
+    setNfaName('')
+  }
+
   return (
     <Form>
       <Form.Field>
+        <label>Game</label>
         <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       </Form.Field>
       <Form.Field>
+        <label>Name</label>
         <Input
-          label="Name of the asset class"
-          state="newValue"
           type="string"
           onChange={(_, { value }) => setNfaName(value)}
+          value={nfaName}
+          placeholder='Name of Non-fungible Asset'
         />
       </Form.Field>
       <Form.Field>
@@ -724,6 +737,7 @@ function NfaCreate(props) {
             paramFields: ['organization_id', 'name',],
 
           }}
+          txOnClickHandler={handleTrx}
         />
       </Form.Field>
       <TxStatusView status={status} setStatus={setStatus} />
@@ -736,15 +750,22 @@ function NfaRemove(props) {
   const [selectedClass, setSelectedClass] = useState('')
   const [status, setStatus] = useState('')
 
+  const handleTrx = (unsub) => {
+    setOrg('')
+    setSelectedClass('')
+  }
+
   return (
     <Form>
       <Form.Field>
+        <label>Game</label>
         <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       </Form.Field>
       <Form.Field>
+        <label>Non-fungible Asset</label>
         <NfaSelector selectedNfa={selectedClass} setSelectedNfa={setSelectedClass} />
       </Form.Field>
-      <Form.Field style={{ textAlign: 'center' }}>
+      <Form.Field>
         <TxButton
           label="Remove FA"
           type="SIGNED-TX"
@@ -756,6 +777,7 @@ function NfaRemove(props) {
             inputParams: [org, selectedClass],
             paramFields: ['organization_id', 'class_id'],
           }}
+          txOnClickHandler={handleTrx}
         />
       </Form.Field>
       <TxStatusView status={status} setStatus={setStatus} />
@@ -853,7 +875,7 @@ function NfaEdit(props) {
           <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
         </Form.Field>
         <Form.Field>
-          <label>NFA id</label>
+          <label>Non-fungible Asset</label>
           <NfaSelector selectedNfa={selectedClass} setSelectedNfa={setSelectedClass} />
         </Form.Field>
         <Form.Input label='Name' readOnly placeholder='Name of NFT' value={nfaName} />
@@ -861,8 +883,11 @@ function NfaEdit(props) {
           <Form.Input label='Instances' readOnly placeholder='Number of instances' value={nfaInstances} />
           <Form.Input label='Attributes' readOnly placeholder='Number of attributes' value={nfaAttributes} />
         </Form.Group>
-        <Accordion as={Form.Field} panels={mechanicsUI} styled fluid />
+        <Form.Field>
+        <label>Characteristics</label>
+        <Accordion as={Form.Field} panels={mechanicsUI} styled fluid disabled={!selectedClass} />
         <TxStatusView status={status} setStatus={setStatus} />
+        </Form.Field>
       </Form>
     </div>
 
@@ -946,7 +971,7 @@ function NfaEditAttributes(props) {
           <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
         </Form.Field>
         <Form.Field>
-          <label>NFA id</label>
+          <label>Non-fungible Asset</label>
           <NfaSelector selectedNfa={selectedClass} setSelectedNfa={setSelectedClass} />
         </Form.Field>
         <Form.Input label='Name' readOnly placeholder='Name of NFT' value={nfaName} />

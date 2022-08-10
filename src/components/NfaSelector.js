@@ -4,9 +4,9 @@ import { useSubstrateState } from '../substrate-lib'
 import { NfaClassView } from './NfaClassView'
 
 function NfaSelector({
-  // selectedNfa,
+  selectedNfa,
   setSelectedNfa,
-  placeholder = 'Select NFA'
+  placeholder = 'Select NFA',
 }) {
   const { api, } = useSubstrateState()
   const [classIds, setClassIds] = useState([])
@@ -50,7 +50,7 @@ function NfaSelector({
       search
       clearable
       options={classOptions}
-      // value={selectedNfa}
+      value={selectedNfa}
       onChange={handleChange}
     />
   )

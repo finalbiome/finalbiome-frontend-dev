@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TxButton } from './substrate-lib/components'
 
 import { FaSelector } from './components/FaSelector'
@@ -172,9 +172,24 @@ function BettorSummary({
 }
 
 function OutcomesView({
-  nfaBettorOutcomes
+  nfaBettorOutcomes = []
 }) {
-  const outcomes = nfaBettorOutcomes || []
+  const [probSum, setProbSum] = useState(0)
+
+  const calcProbSum = () => {
+    let s = 0;
+    nfaBettorOutcomes.forEach(o => {
+      s += Number(o.probability)
+    })
+    setProbSum(s)
+  }
+  useEffect(calcProbSum, [nfaBettorOutcomes])
+
+
+  const formatProbability = (prob) => {
+    const p = prob / probSum;
+    return `${prob} (${Number(p).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 })})`
+  }
 
   return (
     <div style={{ marginBottom: '1em' }}>
@@ -187,10 +202,10 @@ function OutcomesView({
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {outcomes.map((o, i) => (
+          {nfaBettorOutcomes.map((o, i) => (
             <Table.Row key={'outcms-t-' + i}>
               <Table.Cell>{o.name}</Table.Cell>
-              <Table.Cell>{o.probability}</Table.Cell>
+              <Table.Cell>{formatProbability(o.probability)}</Table.Cell>
               <Table.Cell>{o.result}</Table.Cell>
             </Table.Row>
           ))}
