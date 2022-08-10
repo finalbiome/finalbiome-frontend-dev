@@ -1,5 +1,5 @@
 import { Icon, Label, List, Popup } from 'semantic-ui-react'
-import { AttributesView } from './AttributesView'
+import { AttributesHint } from './AttributesHint'
 
 function PurchasedHint({
   classDetails
@@ -21,7 +21,7 @@ function PurchasedHint({
                   </Label>
                   <div style={{ display: 'inline-block' }}>
                     {o.price}
-                    <AttributesView attributes={o.attributes.map(a => { return { name: a.key, value: a.value, inInstance: true } })} />
+                    <AttributesHint attributes={o.attributes.map(a => { return { name: a.key, value: a.value, inInstance: true } })} />
                   </div>
                 </List.Item>
               ))}

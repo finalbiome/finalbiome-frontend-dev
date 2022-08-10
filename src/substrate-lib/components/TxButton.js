@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Button } from 'semantic-ui-react'
+import { Button, Icon } from 'semantic-ui-react'
 import { web3FromSource } from '@polkadot/extension-dapp'
 
 import { useSubstrateState } from '../'
@@ -15,6 +15,8 @@ function TxButton({
   style = null,
   type = 'QUERY',
   txOnClickHandler = null,
+  icon = '',
+  buttonType = 'button',
 }) {
   // Hooks
   const { api, currentAccount } = useSubstrateState()
@@ -268,24 +270,48 @@ function TxButton({
   }
 
   return (
-    <Button
-      basic
-      color={color}
-      style={style}
-      type="submit"
-      onClick={transaction}
-      disabled={
-        disabled ||
-        !palletRpc ||
-        !callable ||
-        !allParamsFilled() ||
-        // These txs required currentAccount to be set
-        ((isSudo() || isUncheckedSudo() || isSigned()) && !currentAccount) ||
-        ((isSudo() || isUncheckedSudo()) && !isSudoer(currentAccount))
-      }
-    >
-      {label}
-    </Button>
+    <>
+      {buttonType === 'button' ? (
+        <Button
+          basic
+          color={color}
+          style={style}
+          type="submit"
+          onClick={transaction}
+          disabled={
+            disabled ||
+            !palletRpc ||
+            !callable ||
+            !allParamsFilled() ||
+            // These txs required currentAccount to be set
+            ((isSudo() || isUncheckedSudo() || isSigned()) && !currentAccount) ||
+            ((isSudo() || isUncheckedSudo()) && !isSudoer(currentAccount))
+          }
+          icon={icon}
+        >
+          {label}
+        </Button>
+      ) : (
+        <Icon
+          link
+          title={label}
+          color={color}
+          style={style}
+          name={icon}
+          onClick={transaction}
+          disabled={
+            disabled ||
+            !palletRpc ||
+            !callable ||
+            !allParamsFilled() ||
+            // These txs required currentAccount to be set
+            ((isSudo() || isUncheckedSudo() || isSigned()) && !currentAccount) ||
+            ((isSudo() || isUncheckedSudo()) && !isSudoer(currentAccount))
+          }
+        />
+      )}
+    </>
+
   )
 }
 

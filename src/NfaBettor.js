@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { TxButton } from './substrate-lib/components'
 
-import { FaSelector } from './Organizations'
+import { FaSelector } from './components/FaSelector'
 
 import {
   Table, Button, Form, Input, Icon, Dropdown, Divider, Label, Header

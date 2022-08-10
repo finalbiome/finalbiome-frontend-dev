@@ -18,6 +18,9 @@ import { PurchasedView } from './NfaPurchased'
 import { TxStatusView } from './components/TxStatusView'
 import { NfaSelector } from './components/NfaSelector'
 import { NfaClassView } from './components/NfaClassView'
+import { AttributeFormAddToClass, AttributeView } from './components/Attributes'
+import { FaInstanceView } from './components/FaInstanceView'
+import { FaSelector } from './components/FaSelector'
 
 const acctAddr = acct => (acct ? acct.address : '')
 
@@ -56,7 +59,7 @@ function CreateOrganization(props) {
       <Form>
         <Form.Field>
           <Input
-            label="Name of the organization"
+            label="Name of the Game"
             state="newValue"
             type="string"
             onChange={(_, { value }) => setFormValue(value)}
@@ -139,7 +142,7 @@ function OrganizationsList(props) {
                 <strong>Address</strong>
               </Table.Cell>
                 <Table.Cell width={6} textAlign="right">
-                <strong>Organization Name</strong>
+                  <strong>Game Name</strong>
               </Table.Cell>
             </Table.Row>
             {organizations.map(org => (
@@ -357,8 +360,8 @@ function FaList(props) {
               <Table.Cell width={4} textAlign="right">
                 <strong>Supply</strong>
               </Table.Cell>
-                <Table.Cell width={4} textAlign="right">
-                  <strong>Raw</strong>
+                <Table.Cell width={4}>
+                  <strong>Details</strong>
                 </Table.Cell>
             </Table.Row>
             {assets.sort((a, b) => a.id[1] - b.id[1]).map(asset => (
@@ -369,12 +372,12 @@ function FaList(props) {
                 <Table.Cell width={10}>
                   <AccountView address={asset.owner} />
                 </Table.Cell>
-                <Table.Cell width={3}>
+                <Table.Cell width={4} textAlign="right">
                   {asset.supply}
                 </Table.Cell>
-                <Table.Cell width={1}
+                <Table.Cell width={4}
                   title={JSON.stringify(asset.human, null, 2)}>
-                  {JSON.stringify(asset.human)}
+                  <FaInstanceView faId={asset.id[1]} />
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -467,56 +470,6 @@ function FaCreate(props) {
       </Form.Field>
       <TxStatusView status={status} setStatus={setStatus} />
     </Form>
-  )
-}
-
-function FaSelector({
-  selectedFa,
-  setSelectedFa,
-  placeholder='Select FA'
-}) {
-  const { api, } = useSubstrateState()
-  const [assetOptions, setAssetOptions] = useState([])
-  const [assetIds, setAssetIds] = useState([])
-
-  const handleChange = (e, { value }) => setSelectedFa(value)
-
-  const fetchAllFaIds =() => {
-    let unsub = null
-    const asyncFetch = async () => {
-      unsub = await api.query.fungibleAssets.assets.keys(
-        keys => {
-          setAssetIds(keys.map(k => k.toHuman()[0]))
-        })
-    }
-    asyncFetch()
-    return () => {unsub && unsub()}
-  }
-  useEffect(fetchAllFaIds, [api])
-
-  const fillOptions = () => {
-    setAssetOptions(assetIds.map(a => {
-      return {
-        key: a,
-        value: a,
-        text: a,
-        icon: 'sun',
-      }
-    }))
-  }
-  useEffect(fillOptions, [assetIds])
-
-  return (
-    <Dropdown
-      placeholder={placeholder}
-      // fluid
-      selection
-      search
-      clearable
-      options={assetOptions}
-      value={selectedFa}
-      onChange={handleChange}
-    />
   )
 }
 
@@ -660,6 +613,10 @@ function NfaManage(params) {
       render: () => <Tab.Pane attached={false}><NfaCreate /></Tab.Pane>,
     },
     {
+      menuItem: 'Edit NFA Attributes',
+      render: () => <Tab.Pane attached={false}><NfaEditAttributes /></Tab.Pane>,
+    },
+    {
       menuItem: 'Edit NFA',
       render: () => <Tab.Pane attached={false}><NfaEdit /></Tab.Pane>,
     },
@@ -772,7 +729,20 @@ function NfaEdit(props) {
 
   const [status, setStatus] = useState('')
 
+  const cleanForm = () => {
+    setNfaName('')
+    setNfaInstances('')
+    setNfaAttributes('')
+    setNfaOwner('')
+    setNfaPurchased('')
+    setNfaBettor('')
+  }
+
   const fetchNfaDetails = () => {
+    if (!selectedClass) {
+      cleanForm()
+      return
+    }
     let unsub = null
     const asyncFetch = async () => {
       unsub = await api.query.nonFungibleAssets.classes(selectedClass,
@@ -819,7 +789,7 @@ function NfaEdit(props) {
     <div>
       <Form>
         <Form.Field>
-          <label>Organization</label>
+          <label>Game</label>
           <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
         </Form.Field>
         <Form.Field>
@@ -832,6 +802,100 @@ function NfaEdit(props) {
           <Form.Input label='Attributes' readOnly placeholder='Number of attributes' value={nfaAttributes} />
         </Form.Group>
         <Accordion as={Form.Field} panels={mechanicsUI} styled fluid />
+        <TxStatusView status={status} setStatus={setStatus} />
+      </Form>
+    </div>
+
+  )
+}
+
+function NfaEditAttributes(props) {
+  const { api, } = useSubstrateState()
+
+  const [org, setOrg] = useState('')
+  const [selectedClass, setSelectedClass] = useState('')
+  // nfa details //
+  const [nfaName, setNfaName] = useState('')
+  const [nfaInstances, setNfaInstances] = useState('')
+  const [nfaAttributes, setNfaAttributes] = useState('')
+  const [classAttributes, setClassAttributes] = useState([])
+
+  const [status, setStatus] = useState('')
+
+  const cleanForm = () => {
+    setNfaName('')
+    setNfaInstances('')
+    setNfaAttributes('')
+    setClassAttributes([])
+  }
+
+  const fetchNfaDetails = () => {
+    if (!selectedClass) {
+      cleanForm()
+      return
+    }
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.nonFungibleAssets.classes(selectedClass,
+        detail => {
+          const d = detail.toHuman()
+          setNfaName(d.name)
+          setNfaInstances(d.instances)
+          setNfaAttributes(d.attributes)
+        })
+    }
+    asyncFetch()
+    return () => { unsub && unsub() }
+  }
+  useEffect(fetchNfaDetails, [api, selectedClass])
+
+  const fetchClassAttributes = () => {
+    if (!selectedClass) return;
+
+    const classId = selectedClass
+
+    let unsub = null
+    const asyncFetch = async () => {
+      // fetch attributes from the class
+      let attrKeysClass = await api.query.nonFungibleAssets.classAttributes.keys(classId)
+      let attrKeys = attrKeysClass.map(key => key.args.map(k => k.toHuman()));
+      unsub = await api.query.nonFungibleAssets.classAttributes.multi(attrKeys, entries => {
+        const attributes = []
+        entries.forEach((entry, idx) => {
+          if (entry.isSome) {
+            const attr = {
+              key: attrKeys[idx][1],
+              value: entry.toHuman()
+            }
+            attributes.push(attr)
+          }
+        })
+        setClassAttributes(attributes)
+      });
+    }
+    asyncFetch()
+    return () => { unsub && unsub() }
+  }
+  useEffect(fetchClassAttributes, [api, selectedClass, nfaAttributes])
+
+  return (
+    <div>
+      <Form>
+        <Form.Field>
+          <label>Game</label>
+          <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
+        </Form.Field>
+        <Form.Field>
+          <label>NFA id</label>
+          <NfaSelector selectedNfa={selectedClass} setSelectedNfa={setSelectedClass} />
+        </Form.Field>
+        <Form.Input label='Name' readOnly placeholder='Name of NFT' value={nfaName} />
+        <Form.Group widths='equal'>
+          <Form.Input label='Instances' readOnly placeholder='Number of instances' value={nfaInstances} />
+          <Form.Input label='Attributes' readOnly placeholder='Number of attributes' value={nfaAttributes} />
+        </Form.Group>
+        <AttributeView attributes={classAttributes} doRemove={true} classId={selectedClass} organizationId={org} setStatus={setStatus} />
+        <AttributeFormAddToClass organizationId={org} classId={selectedClass} setStatus={setStatus} />
         <TxStatusView status={status} setStatus={setStatus} />
       </Form>
     </div>
@@ -913,5 +977,3 @@ export default function Organizations(props) {
     <Main {...props} />
   ) : null
 }
-
-export { FaSelector }

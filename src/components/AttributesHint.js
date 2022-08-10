@@ -1,6 +1,6 @@
 import { Icon, List, Popup } from 'semantic-ui-react'
 
-function AttributesView({
+function AttributesHint({
   attributes
 }) {
   return (
@@ -31,7 +31,7 @@ function AttributeView({
   name,
   value
 }) {
-  const val = 'Text' in value ? value['Text'] : (value['Number'].numberValue + (value['Number'].numberMax ? '/' + value['Number'].numberMax : ''))
+  const val = formatAttribute(value)
   return (
     <>
       <span style={{ fontWeight: 'bold', marginRight: '1em' }}>{name}</span>{val}
@@ -39,6 +39,12 @@ function AttributeView({
   )
 }
 
+function formatAttribute(value) {
+  if (!value) return ''
+  return 'Text' in value ? `"${value['Text']}"` : (value['Number'].numberValue + (value['Number'].numberMax ? '/' + value['Number'].numberMax : ''))
+}
+
 export {
-  AttributesView
+  AttributesHint,
+  formatAttribute,
 }
