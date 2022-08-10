@@ -58,14 +58,14 @@ function CreateOrganization(props) {
       <Header as="h3">Make {currentAccount.meta.name.toUpperCase()} a game</Header>
       <Form>
         <Form.Field>
+          <label>Name</label>
           <Input
-            label="Name of the Game"
             state="newValue"
             type="string"
             onChange={(_, { value }) => setFormValue(value)}
           />
         </Form.Field>
-        <Form.Field style={{ textAlign: 'center' }}>
+        <Form.Field>
           <TxButton
             label="Create"
             type="SIGNED-TX"
@@ -250,40 +250,52 @@ function ManageMembers(props) {
 
   }, [api, keyring, member, currentAccount, status])
 
+  const handleTrx = (unsub => {
+    setMember('')
+  })
+
   return currentAccount && currentAccount.meta.org ? (
     <Segment>
       <Header as="h3">Manage Members of the Game</Header>
-      <AccountSelector selectedAccount={member} setSelectedAccount={setMember} />
-      <br />
-      <Button.Group>
-        <TxButton
-          disabled={isMember}
-          color="green"
-          label="Add"
-          type="SIGNED-TX"
-          setStatus={setStatus}
-          attrs={{
-            palletRpc: 'organizationIdentity',
-            callable: 'addMember',
-            inputParams: [member],
-            paramFields: [true],
-          }}
-        />
-        <Button.Or />
-        <TxButton
-          disabled={!isMember}
-          color="red"
-          label="Remove"
-          type="SIGNED-TX"
-          setStatus={setStatus}
-          attrs={{
-            palletRpc: 'organizationIdentity',
-            callable: 'removeMember',
-            inputParams: [member],
-            paramFields: [true],
-          }}
-        />
-      </Button.Group>
+      <Form>
+      <Form.Field>
+        <label>Account</label>
+        <AccountSelector selectedAccount={member} setSelectedAccount={setMember} />
+      </Form.Field>
+      <Form.Field>
+        <Button.Group>
+          <TxButton
+            disabled={isMember}
+            color="green"
+            label="Add"
+            type="SIGNED-TX"
+            setStatus={setStatus}
+            attrs={{
+              palletRpc: 'organizationIdentity',
+              callable: 'addMember',
+              inputParams: [member],
+              paramFields: [true],
+            }}
+            txOnClickHandler={handleTrx}
+          />
+          <Button.Or />
+          <TxButton
+            disabled={!isMember}
+            color="red"
+            label="Remove"
+            type="SIGNED-TX"
+            setStatus={setStatus}
+            attrs={{
+              palletRpc: 'organizationIdentity',
+              callable: 'removeMember',
+              inputParams: [member],
+              paramFields: [true],
+            }}
+            txOnClickHandler={handleTrx}
+          />
+        </Button.Group>
+      </Form.Field>
+      </Form>
       <TxStatusView status={status} setStatus={setStatus} />
     </Segment>
   ) : null
@@ -411,8 +423,10 @@ function FaManage(params) {
 function FaCreate(props) {
   const [org, setOrg] = useState('')
   const [faName, setFaName] = useState('')
-  const [faTopUpped, setFaTopUpped] = useState('')
+  const [faTopUpped, setFaTopUpped] = useState(false)
   const [faTopUppedSpeed, setFaTopUppedSpeed] = useState('')
+  const [faLocalCup, setFaLocalCap] = useState('')
+  const [faGlobalCup, setFaGlobalCap] = useState('')
   const [status, setStatus] = useState('')
 
   const topUppedStruct = (faTopUpped, faTopUppedSpeed) => {
@@ -421,39 +435,78 @@ function FaCreate(props) {
       speed: faTopUppedSpeed
     }
   }
+  const cupStruct = (cup) => {
+    if (!cup) return undefined;
+    return {
+      amount: cup
+    }
+  }
+
+  const cleanForm = () => {
+    setOrg('')
+    setFaName('')
+    setFaTopUpped(false)
+    setFaTopUppedSpeed('')
+    setFaLocalCap('')
+    setFaGlobalCap('')
+    setStatus('')
+  }
+
+  const handleTrx = (unsub) => {
+    cleanForm()
+  }
 
   return (
     <Form>
       <Form.Field>
+        <label>Game</label>
         <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       </Form.Field>
       <Form.Field>
+        <label>Name</label>
         <Input
-          label="Name of the asset"
           state="newValue"
           type="string"
           onChange={(_, { value }) => setFaName(value)}
+          value={faName}
         />
       </Form.Field>
       <Form.Field>
+        <label>Top-Upped</label>
         <Checkbox
-          label='Asset is Top Upped'
           onChange={(_, { checked }) => setFaTopUpped(checked)}
           // required={false}
-          defaultChecked={false}
+          checked={faTopUpped}
         />
       </Form.Field>
       {faTopUpped ?
         <Form.Field>
+          <label>Speed of recovery</label>
           <Input
-            label="Speed of recovery"
             state="newValue"
             type="number"
             onChange={(_, { value }) => setFaTopUppedSpeed(value)}
+            value={faTopUppedSpeed}
           />
         </Form.Field>
         : null
       }
+      <Form.Field>
+        <label>Local Cup</label>
+        <Input
+          type="number"
+          onChange={(_, { value }) => setFaLocalCap(value)}
+          value={faLocalCup}
+        />
+      </Form.Field>
+      <Form.Field>
+        <label>Global Cup</label>
+        <Input
+          type="number"
+          onChange={(_, { value }) => setFaGlobalCap(value)}
+          value={faGlobalCup}
+        />
+      </Form.Field>
       <Form.Field>
         <TxButton
           label="Create FA"
@@ -462,10 +515,10 @@ function FaCreate(props) {
           attrs={{
             palletRpc: 'fungibleAssets',
             callable: 'create',
-            inputParams: [org, faName, topUppedStruct(faTopUpped, faTopUppedSpeed)],
-            paramFields: ['organization_id', 'name', { value: 'top_upped', optional: !faTopUpped }],
-
+            inputParams: [org, faName, topUppedStruct(faTopUpped, faTopUppedSpeed), cupStruct(faGlobalCup), cupStruct(faLocalCup)],
+            paramFields: ['organization_id', 'name', { value: 'top_upped', optional: !faTopUpped },  { value: 'cup_global', optional: true }, { value: 'cup_local', optional: true }],
           }}
+          txOnClickHandler={handleTrx}
         />
       </Form.Field>
       <TxStatusView status={status} setStatus={setStatus} />
