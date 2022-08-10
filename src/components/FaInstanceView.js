@@ -30,11 +30,15 @@ function FaInstanceView({
   useEffect(fetchDetails, [api, faId])
 
   return (
-    <Label>
-      <Icon name='sun' />
-      {details.name}
-      <Label.Detail><Details details={details} /></Label.Detail>
-    </Label>
+    <>
+      {details.name ? (
+        <Label>
+          <Icon name='sun' />
+          {details.name}
+          <Label.Detail><Details details={details} /></Label.Detail>
+        </Label>
+      ) : null}
+    </>
   )
 }
 

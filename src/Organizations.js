@@ -531,15 +531,21 @@ function FaRemove(props) {
   const [selectedAsset, setSelectedAsset] = useState('')
   const [status, setStatus] = useState('')
 
+  const handleTrx = (unsub) => {
+    setSelectedAsset('')
+  }
+
   return (
     <Form>
       <Form.Field>
+        <label>Game</label>
         <AccountSelector selectedAccount={org} setSelectedAccount={setOrg} onlyOrgs={true} placeholder={'Select Game...'} />
       </Form.Field>
       <Form.Field>
+        <label>Fungible Asset</label>
         <FaSelector selectedFa={selectedAsset} setSelectedFa={setSelectedAsset} />
       </Form.Field>
-      <Form.Field style={{ textAlign: 'center' }}>
+      <Form.Field>
         <TxButton
           label="Remove FA"
           type="SIGNED-TX"
@@ -551,6 +557,7 @@ function FaRemove(props) {
             inputParams: [org, selectedAsset],
             paramFields: ['organization_id', 'asset_id'],
           }}
+          txOnClickHandler={handleTrx}
         />
       </Form.Field>
       <TxStatusView status={status} setStatus={setStatus} />
