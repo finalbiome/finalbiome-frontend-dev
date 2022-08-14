@@ -15,7 +15,7 @@ function TxButton({
   style = null,
   type = 'QUERY',
   txOnClickHandler = null,
-  icon = '',
+  icon = null,
   buttonType = 'button',
 }) {
   // Hooks

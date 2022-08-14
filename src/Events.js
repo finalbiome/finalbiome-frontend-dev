@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Feed, Grid, Button, Icon } from 'semantic-ui-react'
+import { Feed, Grid, Button, Icon, Dropdown } from 'semantic-ui-react'
 
 import { useSubstrateState } from './substrate-lib'
 
@@ -10,11 +10,37 @@ const FILTERED_EVENTS = [
 
 const eventName = ev => `${ev.section}:${ev.method}`
 // const eventParams = ev => JSON.stringify(ev.data)
+const sectionToIconName = (section, method) => {
+  switch (section) {
+    case 'organizationIdentity':
+      return 'game';
+    case 'fungibleAssets':
+      return 'sun';
+    case 'nonFungibleAssets':
+      return 'diamond';
+    case 'mechanics':
+      return 'cogs';
+    case 'balances':
+      return 'dollar';
+    case 'system':
+      switch (method) {
+        case 'ExtrinsicSuccess':
+          return 'check';
+        default:
+          break;
+      }
+      return 'microchip';
+
+    default:
+      return 'bell';
+  }
+}
 
 function Main(props) {
   const { api } = useSubstrateState()
   const [eventFeed, setEventFeed] = useState([])
-
+  const [filterOptions, setFilterOptions] = useState([])
+  const [currentFilter, setCurrentFilter] = useState([])
 
 
   useEffect(() => {
@@ -75,10 +101,11 @@ function Main(props) {
           setEventFeed(e => [
             {
               key: keyNum + Math.random().toString(),
-              icon: isError ? 'ban' : evHuman.section === 'organizationIdentity' ? 'building' : 'bell',
+              icon: sectionToIconName(evHuman.section, evHuman.method),
               summary: evName,
               content,
               isError,
+              section: evHuman.section,
             },
             ...e,
           ])
@@ -92,11 +119,39 @@ function Main(props) {
     return () => unsub && unsub()
   }, [api.query.system, api.events.system, api.registry])
 
-  const { feedMaxHeight = 250 } = props
+
+  const fillOptions = () => {
+    const sections = new Set()
+    eventFeed.forEach(e => {
+      sections.add(e.section);
+    });
+    setFilterOptions([...sections].map((s, i) => {
+      return {
+        key: s,
+        text: s,
+        value: s,
+        icon: sectionToIconName(s),
+      }
+    }))
+  }
+  useEffect(fillOptions, [eventFeed])
+
+  const { feedMaxHeight = 200 } = props
 
   return (
     <Grid.Column width={16}>
+      <div style={{display: 'flex', alignItems: 'center'}}>
       <h1 style={{ float: 'left' }}>Events</h1>
+        <Dropdown
+          // placeholder='Pallet'
+          // fluid
+          multiple
+          // selection
+          icon={'filter'}
+          style={{ marginBottom: '1rem', marginLeft: 'auto', marginRight: '1rem', paddingRight: 0 }}
+          options={filterOptions}
+          onChange={(e, data) => setCurrentFilter(data.value)}
+        ></Dropdown>
       <Button
         basic
         circular
@@ -104,13 +159,15 @@ function Main(props) {
         color="grey"
         floated="right"
         icon="erase"
+        style={{ marginBottom: '1rem' }}
         onClick={_ => setEventFeed([])}
       />
+      </div>
       <Feed
         style={{ clear: 'both', overflow: 'auto', maxHeight: feedMaxHeight }}
       // events={eventFeed}
       >
-        {eventFeed.map((e, i) =>
+        {eventFeed.filter(e => currentFilter.length === 0 || currentFilter.includes(e.section)).map((e, i) =>
         (
           <Feed.Event key={`fe-${i}`}>
             <Feed.Label>
