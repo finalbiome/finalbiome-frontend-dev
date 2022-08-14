@@ -5,6 +5,7 @@ import {
 import { FaBalance } from './FaBalance'
 import { NfaBalance } from './NfaBallance'
 import { ExecuteMechanic } from './ExecuteMechanic'
+import { UpgradeMechanic } from './UpgradeMechanic'
 
 function Main(props) {
   return (
@@ -17,7 +18,9 @@ function Main(props) {
         </Grid.Row>
         <Grid.Row>
           <ExecuteMechanic />
-
+        </Grid.Row>
+        <Grid.Row>
+          <UpgradeMechanic />
         </Grid.Row>
       </Grid>
     </Grid.Column>
