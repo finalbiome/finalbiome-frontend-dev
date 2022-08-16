@@ -10,7 +10,7 @@ function FaInstanceView({
   const [details, setDetails] = useState({})
 
   const fetchDetails = () => {
-    if (!faId) return;
+    if (Number.isNaN(faId)) return;
 
     let unsub = null
     const asyncFetch = async () => {

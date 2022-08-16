@@ -9,6 +9,7 @@ import {
   // eslint-disable-next-line no-unused-vars
   Dropdown, Tab, Checkbox, Accordion
 } from 'semantic-ui-react'
+import { FaInstanceView } from './components/FaInstanceView'
 
 function FaBalance(params) {
   const { api, currentAccount, keyring } = useSubstrateState()
@@ -73,10 +74,10 @@ function FaBalance(params) {
             {balances.map(balance => (
               <Table.Row key={'fa-blns-' + balance.id}>
                 <Table.Cell>
-                  {balance.id}
+                  <FaInstanceView faId={balance.id} />
                 </Table.Cell>
                 <Table.Cell textAlign="right">
-                  {balance.balance}
+                  {balance.balance.toLocaleString('en-US')}
                 </Table.Cell>
               </Table.Row>
             ))}

@@ -17,7 +17,14 @@ function AccountView(props) {
   
   useEffect(() => {
     if (!address) return
-    const acc = keyring.getPair(address)
+    let acc = {}
+    try {
+      // getPair rise an error if an address is not found
+      acc = keyring.getPair(address)
+    } catch (error) {
+      console.log(error)
+      return
+    }
     if (acc) setAccount(acc)
     else setAccount({address: address, meta: {name: 'Unknown'}})
     // setWellKnown(keyring.getPairs())

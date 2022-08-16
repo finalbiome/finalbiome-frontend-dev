@@ -7,7 +7,7 @@ import { AccountView } from './AccountView'
 
 import {
   Table, Grid, Label, Button, Form, Input, Header, Menu, Icon, Segment,
-  Dropdown, Tab, Checkbox, Accordion
+  Dropdown, Tab, Checkbox, Accordion, List
 } from 'semantic-ui-react'
 
 
@@ -21,6 +21,7 @@ import { NfaClassView } from './components/NfaClassView'
 import { AttributeFormAddToClass, AttributeView } from './components/Attributes'
 import { FaInstanceView } from './components/FaInstanceView'
 import { FaSelector } from './components/FaSelector'
+import { OnboardAssetsView } from './OnboardAssets'
 
 const acctAddr = acct => (acct ? acct.address : '')
 
@@ -87,6 +88,7 @@ function CreateOrganization(props) {
 function OrganizationsList(props) {
   const { api, keyring } = useSubstrateState()
   const [organizations, setOrganizations] = useState([])
+  const [members, setMembers] = useState([])
 
   useEffect(() => {
     const addresses = keyring.getPairs().map(account => account.address)
@@ -126,6 +128,35 @@ function OrganizationsList(props) {
 
   }, [api, keyring, setOrganizations])
 
+  const getMembers = () => {
+    setMembers([])
+    
+    
+    const asyncFetch = async () => {
+      const allMembers = []
+      for (let index = 0; index < organizations.length; index++) {
+        const address = organizations[index].address;
+        const members = await api.query.organizationIdentity.membersOf.keys(address);
+        const ids = members.map(key => {
+          return {
+            org:  key.args[0].toJSON(),
+            member: key.args[1].toJSON(),
+          }
+        });
+        allMembers.push(...ids)
+      }
+      setMembers(allMembers)
+    }
+    asyncFetch()
+    
+  }
+  useEffect(getMembers, [api, organizations])
+
+  // eslint-disable-next-line no-unused-vars
+  const getMembersByOrg = (address) => {
+    return members.filter(m => m.org === address).map(m => m.member)
+  }
+
   return (
     // <Grid.Column>
     <div>
@@ -137,21 +168,33 @@ function OrganizationsList(props) {
       ) : (
         <Table celled striped size="small">
           <Table.Body>
-              <Table.Row>
-              <Table.Cell width={10}>
+            <Table.Row key={'org.address'}>
+              <Table.Cell width={6}>
                 <strong>Address</strong>
               </Table.Cell>
-                <Table.Cell width={6} textAlign="right">
-                  <strong>Game Name</strong>
+              <Table.Cell width={2}>
+                <strong>Game Name</strong>
+              </Table.Cell>
+              <Table.Cell width={6}>
+                <strong>Members</strong>
               </Table.Cell>
             </Table.Row>
             {organizations.map(org => (
               <Table.Row key={org.address}>
-                <Table.Cell width={10}>
+                <Table.Cell width={6}>
                   <AccountView address={org.address} />
                 </Table.Cell>
-                <Table.Cell width={6} textAlign="right">
+                <Table.Cell width={2}>
                   {org.name}
+                </Table.Cell>
+                <Table.Cell width={6}>
+                  <List>
+                    {getMembersByOrg(org.address).map(member => (
+                      <List.Item key={member}>
+                        <AccountView address={member} key={'acc-i-' + member}/>
+                      </List.Item>
+                    ))}
+                  </List>
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -1036,6 +1079,7 @@ function Main(props) {
                 <OrganizationsList {...props} />
                 <CreateOrganization {...props} />
                 <ManageMembers {...props} />
+                <OnboardAssetsView {...props} />
               </div>
               : null}
             {menuActiveItem === 'fa' ?

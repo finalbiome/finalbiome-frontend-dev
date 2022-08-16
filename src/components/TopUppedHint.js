@@ -13,7 +13,7 @@ function TopUppedHint({
       >
         <Popup.Header>Top-up</Popup.Header>
         <Popup.Content>
-          <Label>{topUpped.speed}</Label>
+          <Label>{`${topUpped.speed}/${details.cupLocal.amount}`}</Label>
         </Popup.Content>
       </Popup>
     ) : null}

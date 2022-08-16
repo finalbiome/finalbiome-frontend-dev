@@ -55,7 +55,7 @@ const reducer = (state, action) => {
 }
 
 ///
-// Connecting to the Substrate node
+// Connecting to the FinalBiome node
 
 const connect = (state, dispatch) => {
   const { apiState, socket, jsonrpc } = state
