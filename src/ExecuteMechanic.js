@@ -75,6 +75,7 @@ function PurchasedParams({
         <OfferSelector nfaClass={selectedNfa} selectedOffer={selectedOffer} setSelectedOffer={setSelectedOffer} />
       </FormField>
       <Form.Group>
+        <FormField>
         <TxButton
           label="Execute"
           type="SIGNED-TX"
@@ -87,6 +88,7 @@ function PurchasedParams({
           }}
           txOnClickHandler={handleTrx}
         />
+        </FormField>
         <Form.Button
           basic
           content='Cancel'

@@ -6,6 +6,7 @@ import { FaBalance } from './FaBalance'
 import { NfaBalance } from './NfaBallance'
 import { ExecuteMechanic } from './ExecuteMechanic'
 import { UpgradeMechanic } from './UpgradeMechanic'
+import { OnboardGame } from './OnboardGame'
 
 function Main(props) {
   return (
@@ -15,6 +16,9 @@ function Main(props) {
         <Grid.Row >
           <FaBalance />
           <NfaBalance />
+        </Grid.Row>
+        <Grid.Row>
+          <OnboardGame />
         </Grid.Row>
         <Grid.Row>
           <ExecuteMechanic />

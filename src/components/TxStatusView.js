@@ -6,7 +6,14 @@ function TxStatusView({
   setStatus
 }) {
 
+  const tid = window.setTimeout(() => setStatus(''), 5000);
+
   if (!status) return (null)
+
+  const onDismiss = () => {
+    setStatus('')
+    window.clearTimeout(tid);
+  }
 
   const iconName = (status) => {
     switch (true) {
@@ -28,6 +35,7 @@ function TxStatusView({
     return (status[1] !== '\uDE1E' && status[0] !== '\uD83D' && status[0] !== 'E')
   }
   const positive = (status) => {
+    // autoCleanStatus()
     return status[1] === '\uDE09'
   }
   const negative = (status) => {
@@ -38,7 +46,7 @@ function TxStatusView({
     <Message
         hidden={!status}
         icon
-        onDismiss={() => setStatus('')}
+        onDismiss={onDismiss}
         info={info(status)}
         positive={positive(status)}
         negative={negative(status)}

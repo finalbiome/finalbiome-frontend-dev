@@ -56,18 +56,20 @@ function UpgradeMechanic(params) {
           <ActiveMechanicsDropdown selectedMechanicId={selectedMechanic} setSelectedMechanicId={setSelectedMechanic} />
         </FormField>
         <Form.Group>
-          <TxButton
-            label="Execute"
-            type="SIGNED-TX"
-            setStatus={setStatus}
-            attrs={{
-              palletRpc: 'mechanics',
-              callable: 'upgrade',
-              inputParams: [data],
-              paramFields: ['upgrage_data'],
-            }}
-            txOnClickHandler={handleTrx}
-          />
+          <FormField>
+            <TxButton
+              label="Upgrade"
+              type="SIGNED-TX"
+              setStatus={setStatus}
+              attrs={{
+                palletRpc: 'mechanics',
+                callable: 'upgrade',
+                inputParams: [data],
+                paramFields: ['upgrage_data'],
+              }}
+              txOnClickHandler={handleTrx}
+            />
+          </FormField>
           <Form.Button
             basic
             content='Cancel'
