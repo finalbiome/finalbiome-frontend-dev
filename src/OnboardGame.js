@@ -28,7 +28,7 @@ function OnboardGame({
   return (
     <>
       <Grid.Column>
-        <Header as="h2">Onboard to Game</Header>
+        <Header as="h2">Onboard to the Game</Header>
         <Form>
           <FormField>
             <label>Game</label>
