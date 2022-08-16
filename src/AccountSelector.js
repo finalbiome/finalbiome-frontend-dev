@@ -51,7 +51,7 @@ function Main(props) {
     asyncFetch()
     return () => {unsub && unsub()}
   }
-  useEffect(getAllOrganizations, [api, currentAccount, orgIds])
+  useEffect(getAllOrganizations, [api, currentAccount])
 
   function setMetaOrg() {
     keyring.getPairs().forEach(acc => {
