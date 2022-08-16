@@ -55,14 +55,26 @@ function FaBalance(params) {
   }
   useEffect(subscribeFaByAcc, [api, faIds, currentAccount.address])
 
+  const handleRefresh = () => {
+    getFaIds()()
+  }
+
   return (
     <Grid.Column>
-      <Header as="h2">Balance of FA</Header>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Header as="h2">Balance of FA</Header>
+        <Icon link name='refresh' style={{
+          marginLeft: 'auto',
+          marginBottom: '1rem',
+          marginRight: '1rem',
+        }} color='grey' onClick={handleRefresh} />
+      </div>
       {balances.length === 0 ? (
         <Label basic color="yellow" style={{display: 'flex'}}>
           No FA to be shown
         </Label>
       ) : (
+          <div style={{ clear: 'both', overflow: 'auto', maxHeight: 200 }}>
         <Table celled striped size="small">
           <Table.Header>
             <Table.Row>
@@ -83,6 +95,7 @@ function FaBalance(params) {
             ))}
           </Table.Body>
         </Table>
+          </div>
       )}
     </Grid.Column>
   )

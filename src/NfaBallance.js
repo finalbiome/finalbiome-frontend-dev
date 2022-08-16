@@ -30,11 +30,17 @@ function NfaBalance(params) {
 
   return (
     <Grid.Column>
-      <Header as="h2">Balance of NFA</Header>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Header as="h2">Balance of NFA</Header>
+        <Icon link name='refresh' style={{
+          marginLeft: 'auto',
+          marginBottom: '1rem',
+          marginRight: '1rem',
+        }} color='grey' onClick={handleRefresh} />
+      </div>
       {nfaIds.length === 0 ? (
         <Label basic color="yellow" style={{display: 'flex'}}>
           No NFA to be shown
-          <Icon link name='refresh' style={{ marginLeft: 'auto' }} color='grey' onClick={handleRefresh} />
         </Label>
       ) : (
           <div style={{ clear: 'both', overflow: 'auto', maxHeight: 200 }}>
@@ -42,7 +48,7 @@ function NfaBalance(params) {
             >
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell style={{display: 'flex'}}>NFA <Icon link name='refresh' style={{marginLeft: 'auto'}} color='grey' onClick={handleRefresh} /></Table.HeaderCell>
+                  <Table.HeaderCell style={{ display: 'flex' }}>NFA</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
