@@ -900,12 +900,12 @@ function NfaEdit(props) {
   const mechanicsUI = [
     {
       key: 'Purchased',
-      title: { content: nfaPurchased ? 'Purchased Mechanic *' : 'Purchased Mechanic' },
+      title: { content: nfaPurchased ? 'Purchased *' : 'Purchased' },
       content: { content: FormMechnicPurchased },
     },
     {
       key: 'Bettor',
-      title: { content: nfaBettor ? 'Bettor Mechanic *' : 'Bettor Mechanic' },
+      title: { content: nfaBettor ? 'Bettor *' : 'Bettor' },
       content: { content: FormMechnicBettor },
     },
   ]

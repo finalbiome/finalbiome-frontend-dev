@@ -6,7 +6,7 @@ import { useSubstrateState } from './substrate-lib'
 import { TxButton } from './substrate-lib/components'
 
 
-function UpgradeMechanic(params) {
+function UpgradeMechanic(props) {
   const [selectedMechanic, setSelectedMechanic] = useState('')
   const [status, setStatus] = useState('')
   const [selectedAccount, setSelectedAccount] = useState('')
@@ -53,7 +53,7 @@ function UpgradeMechanic(params) {
         </FormField>
         <FormField>
           <label>Mechanic</label>
-          <ActiveMechanicsDropdown selectedMechanicId={selectedMechanic} setSelectedMechanicId={setSelectedMechanic} />
+          <ActiveMechanicsDropdown selectedMechanicId={selectedMechanic} setSelectedMechanicId={setSelectedMechanic} accountNonce={props.accountNonce} />
         </FormField>
         <Form.Group>
           <FormField>
@@ -85,7 +85,8 @@ function UpgradeMechanic(params) {
 
 function ActiveMechanicsDropdown({
   selectedMechanicId,
-  setSelectedMechanicId // returns as joined via # string
+  setSelectedMechanicId, // returns as joined via # string
+  accountNonce, // for update options
 }) {
   const { api, currentAccount } = useSubstrateState()
   const [mechanicsIds, setMechanicsIds] = useState([])
@@ -105,7 +106,7 @@ function ActiveMechanicsDropdown({
     asyncFetch()
     return () => { unsub && unsub() }
   }
-  useEffect(getActiveMechnics, [api, currentAccount])
+  useEffect(getActiveMechnics, [api, currentAccount, accountNonce])
 
   const fillOptions = () => {
     let options = mechanicsIds.map((id, idx) => {

@@ -11,7 +11,7 @@ import {
 } from 'semantic-ui-react'
 import { FaInstanceView } from './components/FaInstanceView'
 
-function FaBalance(params) {
+function FaBalance(props) {
   const { api, currentAccount, keyring } = useSubstrateState()
   const [balances, setBalances] = useState([])
   const [faIds, setFaIds] = useState([])
@@ -28,7 +28,7 @@ function FaBalance(params) {
     asyncFetch()
     return () => { unsub && unsub() }
   }
-  useEffect(getFaIds, [api, currentAccount])
+  useEffect(getFaIds, [api, currentAccount, props.accountNonce])
 
   const subscribeFaByAcc = () => {
     const faIdsToKeys = () => {

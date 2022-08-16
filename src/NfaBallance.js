@@ -6,7 +6,7 @@ import {
   Table, Grid, Label, Header, Icon} from 'semantic-ui-react'
 import { NfaInstanceView } from './components/NfaInstanceView'
 
-function NfaBalance(params) {
+function NfaBalance(props) {
   const { api, currentAccount } = useSubstrateState()
   const [nfaIds, setNfaIds] = useState([])
 
@@ -22,7 +22,7 @@ function NfaBalance(params) {
     asyncFetch()
     return () => { unsub && unsub() }
   }
-  useEffect(getNfaIds, [api, currentAccount])
+  useEffect(getNfaIds, [api, currentAccount, props.accountNonce])
 
   const handleRefresh = () => {
     getNfaIds()()

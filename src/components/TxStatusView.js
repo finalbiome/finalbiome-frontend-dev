@@ -6,13 +6,13 @@ function TxStatusView({
   setStatus
 }) {
 
-  const tid = window.setTimeout(() => setStatus(''), 5000);
+  // const tid = window.setTimeout(() => setStatus(''), 5000);
 
   if (!status) return (null)
 
   const onDismiss = () => {
     setStatus('')
-    window.clearTimeout(tid);
+    // window.clearTimeout(tid);
   }
 
   const iconName = (status) => {
