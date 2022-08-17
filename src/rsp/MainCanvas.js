@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import backgroundImg from './assets/background.jpg'
 import { RspButton } from './RspButton'
+import { SplashScreen } from './SplashScreen'
 
 function MainCanvas(params) {
   
@@ -11,6 +13,7 @@ function MainCanvas(params) {
       backgroundImage: `url(${backgroundImg})`,
       backgroundSize: 'contain',
       backgroundRepeat: 'no-repeat',
+      overflow: 'hidden',
     }}>
         <div
           style={{
@@ -21,7 +24,7 @@ function MainCanvas(params) {
             left: 0,
             right: 0,
           }}>
-          <RspButton onClick={(e) => console.log(e)}/>
+          <SplashScreen />
         </div>
     </div>
   )

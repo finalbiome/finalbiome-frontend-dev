@@ -28,8 +28,8 @@ i.icon.game:before {
 .rsp-button {
   position: relative;
   max-width: 350px;
-  max-height: 180px;
-  height: 51.43%;
+  /* max-height: 180px; */
+  /* height: 51.43%; */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -40,7 +40,7 @@ i.icon.game:before {
   position: absolute;
   top: 0;
   left: 0;
-  width: '100%';
+  width: 100%;
   z-index: 1;
 }
 
@@ -89,4 +89,47 @@ i.icon.game:before {
 .caption-wrapper>.caption {
   max-width: 90%;
   margin-top: -3.2%;
+}
+
+/**  Splash  **/
+.splash-wrapper {
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.game-title {
+  height: 39%;
+}
+.hands-wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+}
+
+.scissor {
+  transform: matrix(-0.96, 0.27, 0.27, 0.96, 0, 0);
+  height: 33%;
+  margin-left: -22%;
+  margin-top: 42%;
+}
+.paper {
+  transform: rotate(16.47deg);
+  height: 33%;
+  margin-left: 21%;
+  margin-top: 37%;
+}
+.start-button {
+  width: 18.23%;
+  height: 16%;
+  margin-top: -3%;
 }
