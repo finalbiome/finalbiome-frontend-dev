@@ -25,6 +25,7 @@ import Transfer from './Transfer'
 import Upgrade from './Upgrade'
 import Organizations from './Organizations'
 import Gamer from './Gamer'
+import RspGameMain from './RspGameMain'
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
@@ -129,6 +130,12 @@ function Main() {
               {menuActiveItem === 'gamer' ?
                 <Grid.Row>
                   <Gamer />
+                </Grid.Row>
+                : null
+              }
+              {menuActiveItem === 'rsp-game' ?
+                <Grid.Row>
+                  <RspGameMain />
                 </Grid.Row>
                 : null
               }

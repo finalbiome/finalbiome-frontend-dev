@@ -10,3 +10,83 @@
 i.icon.game:before {
   margin-left: -0.1rem;
 }
+
+/* RSP */
+
+
+@font-face {
+  font-family: "Core Sans G";
+  src: url("/finalbiome/finalbiome-frontend-dev/assets/fonts/CoreSansG-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Core Sans G";
+  src: url("/finalbiome/finalbiome-frontend-dev/assets/fonts/CoreSansG-Bold.ttf") format("truetype");
+  font-weight: bold;
+}
+
+.rsp-button {
+  position: relative;
+  max-width: 350px;
+  max-height: 180px;
+  height: 51.43%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.rsp-button>img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: '100%';
+  z-index: 1;
+}
+
+.rsp-button>img.rsp-button-default {
+  visibility: unset;
+}
+
+.rsp-button:hover>img.rsp-button-default {
+  visibility: hidden;
+}
+
+.rsp-button:active>img.rsp-button-default {
+  visibility: hidden;
+}
+
+.rsp-button>img.rsp-button-hover {
+  visibility: hidden;
+}
+
+.rsp-button:hover>img.rsp-button-hover {
+  visibility: unset;
+}
+
+.rsp-button:active>img.rsp-button-hover {
+  visibility: hidden;
+}
+
+.rsp-button>img.rsp-button-active {
+  visibility: hidden;
+}
+
+.rsp-button:hover>img.rsp-button-active {
+  visibility: hidden;
+}
+
+.rsp-button:active>img.rsp-button-active {
+  visibility: unset;
+}
+
+.rsp-button>.caption-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.caption-wrapper>.caption {
+  max-width: 90%;
+  margin-top: -3.2%;
+}

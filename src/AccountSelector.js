@@ -105,6 +105,11 @@ function Main(props) {
             active={props.currentMenuItem === 'gamer'}
             onClick={handleItemClick}
           />
+          <Menu.Item
+            name='rsp-game'
+            active={props.currentMenuItem === 'rsp-game'}
+            onClick={handleItemClick}
+          />
         </Menu.Menu>
         <Menu.Menu position="right" style={{ alignItems: 'center' }}>
           {!currentAccount ? (
