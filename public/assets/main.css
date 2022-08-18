@@ -1,3 +1,7 @@
+body {
+  -webkit-font-smoothing: antialiased !important;
+}
+
 .github-fork-ribbon.right-bottom:before {
   background-color: #666;
 }
@@ -21,10 +25,26 @@ i.icon.game:before {
 
 @font-face {
   font-family: "Core Sans G";
+  src: url("/finalbiome/finalbiome-frontend-dev/assets/fonts/CoreSansG-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Core Sans G";
   src: url("/finalbiome/finalbiome-frontend-dev/assets/fonts/CoreSansG-Bold.ttf") format("truetype");
-  font-weight: bold;
+  font-weight: 700;
 }
 
+@font-face {
+  font-family: "Core Sans G";
+  src: url("/finalbiome/finalbiome-frontend-dev/assets/fonts/CoreSansG-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Core Sans G";
+  src: url("/finalbiome/finalbiome-frontend-dev/assets/fonts/CoreSansG-Heavy.ttf") format("truetype");
+  font-weight: 900;
+}
 .rsp-button {
   position: relative;
   max-width: 350px;
@@ -92,9 +112,12 @@ i.icon.game:before {
 }
 
 /**  Splash  **/
-.splash-wrapper {
+.screen-wrapper {
   position: relative;
   height: 100%;
+}
+
+.splash-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,4 +155,61 @@ i.icon.game:before {
   width: 18.23%;
   height: 16%;
   margin-top: -3%;
+}
+
+/** AssetWidget **/
+.asset-widget-wrapper {
+  position: relative;
+  aspect-ratio: 250 / 100;
+  width: 13.0208%;
+}
+
+.asset-widget {
+  width: 100%;
+  display: flex;
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 20vw;
+  aspect-ratio: 250 / 100;
+  align-items: center;
+}
+
+.asset-widget-shadow {
+  background: rgba(0, 0, 0, 0.25);
+  position: absolute;
+  left: 0;
+  top: 6%;
+}
+
+.asset-widget-image-container {
+  width: 30%;
+  margin-left: 4%;
+  display: flex;
+}
+
+.asset-widget-image {
+  width: 100%;
+  /* height: 100%; */
+  object-fit: contain;
+}
+
+.asset-widget-text-container {
+  font-family: 'Core Sans G';
+  font-style: normal;
+  font-weight: 900;
+  /* font-size: 25%; */
+  line-height: 1;
+  color: #353535;
+  display: flex;
+  width: 60%;
+  text-align: center;
+  margin-right: 10%;
+}
+
+/** Assets Widgets **/
+.assets-widgets-wrapper {
+  display: flex;
+  margin: 3.125%;
+  column-gap: 3.385%;
+  justify-content: center;
 }

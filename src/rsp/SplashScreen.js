@@ -5,7 +5,7 @@ import { RspButton } from './RspButton'
 
 function SplashScreen(props) {
   return (
-    <div className='splash-wrapper'>
+    <div className='splash-wrapper screen-wrapper'>
       <div className='hands-wrapper'>
         <div className='left-hand-wrapper'>
           <img className='scissor' src={scissorImg} alt='' />
