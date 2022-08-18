@@ -2,6 +2,7 @@
 import backgroundImg from './assets/background.jpg'
 import { RspButton } from './RspButton'
 import { SplashScreen } from './SplashScreen'
+import { StartScreen } from './StartScreen'
 
 function MainCanvas(params) {
   
@@ -24,7 +25,8 @@ function MainCanvas(params) {
             left: 0,
             right: 0,
           }}>
-          <SplashScreen />
+          {/* <SplashScreen /> */}
+          <StartScreen />
         </div>
     </div>
   )

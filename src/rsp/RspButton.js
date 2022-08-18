@@ -1,81 +1,87 @@
 /* eslint-disable no-unused-vars */
-import imgDefault from './assets/btn-start-default.svg'
-import imgDefaultRed from './assets/btn-next-default.svg'
-import imgActive from './assets/btn-start-active.svg'
-import imgActiveRed from './assets/btn-next-active.svg'
-import imgHover from './assets/btn-start-hover.svg'
-import imgHoverRed from './assets/btn-next-hover.svg'
-import playText from './assets/play-text.png'
-import nextText from './assets/next-text.png'
+import imgPlayDefault from './assets/btn-play-default.png'
+import imgPlayHover from './assets/btn-play-hover.png'
+import imgPlayActive from './assets/btn-play-active.png'
+
+import imgNextDefault from './assets/btn-next-default.png'
+import imgNextHover from './assets/btn-next-hover.png'
+import imgNextActive from './assets/btn-next-active.png'
+
+import imgLbDefault from './assets/btn-lb-default.png'
+import imgLbHover from './assets/btn-lb-hover.png'
+import imgLbActive from './assets/btn-lb-active.png'
+
+import imgBackDefault from './assets/btn-back-default.png'
+import imgBackHover from './assets/btn-back-hover.png'
+import imgBackActive from './assets/btn-back-active.png'
 
 function RspButton({
-  caption = 'play',
-  background = 'green',
+  type = 'play',
   onClick,
-  className
+  className =''
 }) {
-
-  const imgText = (caption) => {
-    switch (caption) {
-      case 'play':
-        return playText;
-      case 'next':
-        return nextText
-      default:
-        return playText;
-    }
-  }
-  const altText = (caption) => {
-    switch (caption) {
+  const altText = (type) => {
+    switch (type) {
       case 'play':
         return 'Play';
       case 'next':
         return 'Next'
+      case 'lb':
+        return "Leaderboard"
+      case 'back':
+        return 'Back'
       default:
         return 'Play';
     }
   }
-  const imgBgDefault = (background) => {
-    switch (background) {
-      case 'green':
-        return imgDefault;
-      case 'red':
-        return imgDefaultRed
+  const imgBgDefault = (type) => {
+    switch (type) {
+      case 'play':
+        return imgPlayDefault;
+      case 'next':
+        return imgNextDefault
+      case 'lb':
+        return imgLbDefault
+      case 'back':
+        return imgBackDefault
       default:
-        return imgDefault;
+        return imgPlayDefault;
     }
   }
-  const imgBgHover = (background) => {
-    switch (background) {
-      case 'green':
-        return imgHover;
-      case 'red':
-        return imgHoverRed
+  const imgBgHover = (type) => {
+    switch (type) {
+      case 'play':
+        return imgPlayHover;
+      case 'next':
+        return imgNextHover
+      case 'lb':
+        return imgLbHover
+      case 'back':
+        return imgBackHover
       default:
-        return imgHover;
+        return imgPlayHover;
     }
   }
-  const imgBgActive = (background) => {
-    switch (background) {
-      case 'green':
-        return imgActive;
-      case 'red':
-        return imgActiveRed
+  const imgBgActive = (type) => {
+    switch (type) {
+      case 'play':
+        return imgPlayActive;
+      case 'next':
+        return imgNextActive
+      case 'lb':
+        return imgLbActive
+      case 'back':
+        return imgBackActive
       default:
-        return imgActive;
+        return imgPlayActive;
     }
   }
-
-
 
   return (
     <div className={'rsp-button ' + className} onClick={(e) => onClick(e)}>
-      <div className='caption-wrapper'>
-        <img className='caption' src={imgText(caption)} alt={altText(caption)} />
-      </div>
-      <img className='rsp-button-default' src={imgBgDefault(background)} alt='' />
-      <img className='rsp-button-active' src={imgBgHover(background)} alt='' />
-      <img className='rsp-button-hover' src={imgBgActive(background)} alt='' />
+      <img className='rsp-button-default' src={imgBgDefault(type)} alt={altText(type)} />
+      <img className='rsp-button-hover' src={imgBgHover(type)} alt={altText(type)} />
+      <img className='rsp-button-active' src={imgBgActive(type)} alt={altText(type)} />
     </div>
   )
 }

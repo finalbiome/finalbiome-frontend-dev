@@ -45,6 +45,11 @@ i.icon.game:before {
   src: url("/finalbiome/finalbiome-frontend-dev/assets/fonts/CoreSansG-Heavy.ttf") format("truetype");
   font-weight: 900;
 }
+@font-face {
+  font-family: "Core Sans E";
+  src: url("/finalbiome/finalbiome-frontend-dev/assets/fonts/CoreSansE-65Bold.otf") format("opentype");
+  font-weight: 600;
+}
 .rsp-button {
   position: relative;
   max-width: 350px;
@@ -65,10 +70,12 @@ i.icon.game:before {
 }
 
 .rsp-button>img.rsp-button-default {
-  visibility: unset;
+  width: 100%;
+  position: initial;
+  z-index: 2;
 }
 
-.rsp-button:hover>img.rsp-button-default {
+/* .rsp-button:hover>img.rsp-button-default {
   visibility: hidden;
 }
 
@@ -76,14 +83,17 @@ i.icon.game:before {
   visibility: hidden;
 }
 
+*/
+/* 
 .rsp-button>img.rsp-button-hover {
   visibility: hidden;
 }
 
+*/
 .rsp-button:hover>img.rsp-button-hover {
-  visibility: unset;
+  z-index: 2;
 }
-
+/* 
 .rsp-button:active>img.rsp-button-hover {
   visibility: hidden;
 }
@@ -96,8 +106,9 @@ i.icon.game:before {
   visibility: hidden;
 }
 
+*/
 .rsp-button:active>img.rsp-button-active {
-  visibility: unset;
+  z-index: 2;
 }
 
 .rsp-button>.caption-wrapper {
@@ -213,3 +224,63 @@ i.icon.game:before {
   column-gap: 3.385%;
   justify-content: center;
 }
+
+/** Higscore **/
+.highscore-wrapper {
+  font-family: 'Core Sans G';
+  width: 25%;
+  color: #fff;
+  fill: #fff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.highscore-header {
+  font-style: normal;
+  font-weight: 900;
+  /* font-size: 80px; */
+  line-height: 80%;
+  text-align: center;
+  width: 80%;
+  margin-bottom: 12.5%;
+}
+
+.highscore-name {
+  font-family: 'Core Sans E';
+  font-style: normal;
+  font-weight: 600;
+  width: 138.125%;
+  margin-bottom: 2%;
+}
+
+.highscore-score-wrapper {
+  display: flex;
+  align-items: center;
+  column-gap: 2.92%;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 3%;
+}
+
+.highscore-image-wrapper {
+  width: 14.58%;
+}
+
+.highscore-image {
+  width: 100%;
+  object-fit: contain;
+}
+
+.highscore-score {
+  width: 28.5417%;
+  font-family: 'Core Sans G';
+  font-style: normal;
+  font-weight: 900;
+  display: flex;
+}
+.highscore-button-wrapper {
+  width: 58.7%;
+}
+
