@@ -4,6 +4,8 @@ import diamondImg from './assets/widget-diamond.png'
 function AssetWidget({
   type = 'diamonda',
   value,
+  viewBox = "0 0 35 20",
+  x="17",
 }) {
 
   const wImage = (type) => {
@@ -19,8 +21,8 @@ function AssetWidget({
           <img className='asset-widget-image' src={wImage(type)} alt='' />
         </div>
         <div className='asset-widget-text-container'>
-          <svg viewBox="0 0 35 20">
-            <text x="17" y="15" text-anchor="middle">{value}</text>
+          <svg viewBox={viewBox}>
+            <text x={x} y="15" text-anchor="middle">{value}</text>
           </svg>
         </div>
       </div>

@@ -168,6 +168,13 @@ i.icon.game:before {
   margin-top: -3%;
 }
 
+/** Start Screen **/
+.start-screen-main-section-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  aspect-ratio: 28 / 10;
+}
+
 /** AssetWidget **/
 .asset-widget-wrapper {
   position: relative;
@@ -284,3 +291,57 @@ i.icon.game:before {
   width: 58.7%;
 }
 
+/** Rules **/
+.rules-wrapper {
+  font-family: 'Core Sans G';
+  width: 25%;
+  color: #fff;
+  fill: #fff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.rules-header{
+  width: 42.9167%;
+  font-style: normal;
+  font-weight: 900;
+  /* font-size: 80px; */
+  line-height: 80%;
+  text-align: center;
+  margin-bottom: 3%;
+}
+
+.rules-image-wrapper {
+  width: 100%;
+}
+.rules-image {
+  width: 100%;
+  object-fit: contain;
+}
+
+.start-screen-btn-wrapper {
+  width: 18.22917%;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.start-screen-btn-wrapper > div.asset-widget-wrapper {
+  aspect-ratio: 137 / 80;
+  width: 39.1428571428571%;
+  margin-top: -14%;
+  z-index: 2;
+}
+.start-screen-btn-wrapper > div.asset-widget-wrapper > div.asset-widget {
+  aspect-ratio: 137 / 80;
+}
+
+.start-screen-btn-wrapper > div.asset-widget-wrapper > div.asset-widget > div.asset-widget-image-container {
+  width: 45%;
+  margin-left: 4%;
+}
+.start-screen-btn-wrapper > div.asset-widget-wrapper > div.asset-widget > div.asset-widget-text-container {
+  width: 45%;
+}
