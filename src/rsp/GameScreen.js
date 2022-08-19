@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { AssetsWidgets } from './AssetsWidgets'
 import { ChooseSection } from './ChooseSection'
 import { Footer } from './Footer'
+import { RoundSection } from './RoundSection'
 
 
 function GameScreen(params) {
@@ -10,7 +12,8 @@ function GameScreen(params) {
         <AssetsWidgets />
       </div>
       <div className='game-screen-main'>
-        <ChooseSection />
+        {/* <ChooseSection /> */}
+        <RoundSection />
       </div>
       <div className='game-screen-footer'>
         <Footer />

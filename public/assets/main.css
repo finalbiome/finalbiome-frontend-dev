@@ -453,3 +453,112 @@ i.icon.game:before {
 .game-screen-footer {
   height: calc(100% - 15% - 61%);
 }
+
+/** Game Hands **/
+.game-hands-wrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+}
+
+.game-scissor-left {
+  height: 33%;
+  margin-left: -15%;
+  margin-top: 42%;
+}
+.game-paper-left {
+  height: 33%;
+  margin-left: -18%;
+  margin-top: 37%;
+}
+.game-rock-left {
+  height: 33%;
+  margin-left: -10%;
+  margin-top: 37%;
+}
+.game-scissor-right {
+  height: 33%;
+  margin-left: 21%;
+  margin-top: 37%;
+}
+.game-paper-right {
+  height: 33%;
+  margin-left: 17%;
+  margin-top: 33%;
+}
+.game-rock-right {
+  height: 33%;
+  margin-left: 15%;
+  margin-top: 37%;
+}
+
+.game-start-button {
+  width: 18.23%;
+  height: 16%;
+  margin-top: -3%;
+}
+
+.left-hand-wrapper>img {
+  transform: matrix(-1, 0, 0, 1, 0, -14);
+}
+
+
+@keyframes shake-right {
+  from {  transform: rotate(0.05turn); transform-origin: 100% 70%;  }
+  50% {  transform: rotate(-0.05turn); transform-origin: 100% 70%;  }
+  to   {  transform: rotate(0.05turn); transform-origin: 100% 70%; }
+}
+
+@keyframes shake-left {
+  from {  transform: matrix(-1, 0, 0, 1, -300, -10) rotate(0.05turn); transform-origin: 100% 70%; }
+  50% {  transform: matrix(-1, 0, 0, 1, -300, -10) rotate(-0.05turn); transform-origin: 100% 70%; }
+  to   {  transform: matrix(-1, 0, 0, 1, -300, -10) rotate(0.05turn); transform-origin: 100% 70%; }
+}
+
+.game-shake {
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+.game-shake-right {
+  animation-name: 'shake-right';
+}
+.game-shake-left {
+  animation-name: 'shake-left';
+}
+
+.round-section-wrapper {
+  width: 100%;
+}
+
+.round-section-result-wrapper {
+  width: 100%;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.round-section-result-intermediate {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.round-section-result-intermediate-button {
+  width: 18.229166666666667%;
+  margin-top: 3.645833333333333%;
+}
+
+.round-section-result-intermediate-header {
+  font-family: 'Core Sans G';
+  font-style: normal;
+  font-weight: 900;
+  fill: #fff;
+  width: 22.916666666666667%; /* 440 px */
+}
