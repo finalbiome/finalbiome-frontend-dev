@@ -2,6 +2,7 @@
 import backgroundImg from './assets/background.jpg'
 import { ChooseButton } from './ChooseButton'
 import { ChooseSection } from './ChooseSection'
+import { FinalScreen } from './FinalScreen'
 import { Footer } from './Footer'
 import { GameScreen } from './GameScreen'
 import { RspButton } from './RspButton'
@@ -32,6 +33,7 @@ function MainCanvas(params) {
           {/* <SplashScreen /> */}
           {/* <StartScreen /> */}
           <GameScreen />
+          <FinalScreen />
         </div>
     </div>
   )
