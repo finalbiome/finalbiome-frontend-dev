@@ -1,5 +1,9 @@
 /* eslint-disable no-unused-vars */
 import backgroundImg from './assets/background.jpg'
+import { ChooseButton } from './ChooseButton'
+import { ChooseSection } from './ChooseSection'
+import { Footer } from './Footer'
+import { GameScreen } from './GameScreen'
 import { RspButton } from './RspButton'
 import { SplashScreen } from './SplashScreen'
 import { StartScreen } from './StartScreen'
@@ -26,7 +30,8 @@ function MainCanvas(params) {
             right: 0,
           }}>
           {/* <SplashScreen /> */}
-          <StartScreen />
+          {/* <StartScreen /> */}
+          <GameScreen />
         </div>
     </div>
   )
