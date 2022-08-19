@@ -345,3 +345,62 @@ i.icon.game:before {
 .start-screen-btn-wrapper > div.asset-widget-wrapper > div.asset-widget > div.asset-widget-text-container {
   width: 45%;
 }
+
+/** Score Widget **/
+.score-dot-wrapper {
+  /* width: 3.229167%; */
+
+}
+
+.score-widget {
+  display: flex;
+  column-gap: 2.857142857142857%;
+}
+
+/** Footer **/
+.footer-score-title {
+  font-family: 'Core Sans G';
+  font-style: normal;
+  font-weight: 900;
+  fill: #fff;
+  width: 100%;
+}
+
+.footer-score-wrapper { /* width: 1672 px */
+  display: flex;
+  width: 87.083333333333333%;
+  /* margin-left: 14.786788034446291%; */
+  column-gap: 13.755980861244019%;
+}
+
+.footer-score { /* 350 px*/
+  width: 20.933014354066986%;
+}
+
+.footer-score:first-child { /* 350 px*/
+  margin-left: 14.772727272727273%;
+}
+
+.footer-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin-bottom: 2.62963%;
+}
+
+.footer-btn-wrapper { /* 248 px*/
+  width: 12.916666666666667%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.footer-btn { /* width: 12.999474237644585% */
+  width: 67.741935483870968%;
+  /* margin-left: 4.166666666666667%; */
+  margin-top: 43.5%;
+}
+
