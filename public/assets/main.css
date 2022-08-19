@@ -75,38 +75,10 @@ i.icon.game:before {
   z-index: 2;
 }
 
-/* .rsp-button:hover>img.rsp-button-default {
-  visibility: hidden;
-}
-
-.rsp-button:active>img.rsp-button-default {
-  visibility: hidden;
-}
-
-*/
-/* 
-.rsp-button>img.rsp-button-hover {
-  visibility: hidden;
-}
-
-*/
 .rsp-button:hover>img.rsp-button-hover {
   z-index: 2;
 }
-/* 
-.rsp-button:active>img.rsp-button-hover {
-  visibility: hidden;
-}
 
-.rsp-button>img.rsp-button-active {
-  visibility: hidden;
-}
-
-.rsp-button:hover>img.rsp-button-active {
-  visibility: hidden;
-}
-
-*/
 .rsp-button:active>img.rsp-button-active {
   z-index: 2;
 }
@@ -404,3 +376,35 @@ i.icon.game:before {
   margin-top: 43.5%;
 }
 
+/**  Choose Button  **/
+.choose-button {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+.choose-button>img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  visibility: hidden;
+}
+
+.choose-button>img.choose-button-type {
+  visibility: visible;
+  z-index: 2;
+  padding: 2.6%;
+}
+
+.choose-button>img.choose-button-default {
+  visibility: visible;
+}
+
+.choose-button:hover>img.choose-button-hover {
+  visibility: visible;
+}
+
+.choose-button:active>img.choose-button-active {
+  visibility: visible;
+}
