@@ -10,7 +10,7 @@ function AssetsWidgets({
   return (
     <div className='assets-widgets-wrapper'>
       <AssetWidget type='energy' value={value.energy} />
-      <AssetWidget type='diamond' value={value.energy} />
+      <AssetWidget type='diamond' value={value.diamonds} />
     </div>
   )
 }
