@@ -8,7 +8,8 @@ function RoundSection({
   handPlayer = 'scissor',
   handFb = 'paper',
   wait = false,
-  result = 'win'
+  result = 'win',
+  onClick,
 }) {
 
   const getImg = (hand) => {
@@ -63,11 +64,11 @@ function RoundSection({
             <div className='round-section-result-intermediate'>
               <div className='round-section-result-intermediate-header'>
                 <svg viewBox="0 0 60 12">
-                  <text x="30" y="11" text-anchor="middle">{textResult(result)}</text>
+                  <text x="30" y="11" textAnchor="middle">{textResult(result)}</text>
                 </svg>
               </div>
               <div className='round-section-result-intermediate-button'>
-                <RspButton type='next' onClick={console.log} />
+                <RspButton type='next' onClick={onClick} />
               </div>
             </div>
             <div className='round-section-result-final'></div>

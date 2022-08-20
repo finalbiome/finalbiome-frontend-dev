@@ -1,7 +1,9 @@
 import { ChooseButton } from './ChooseButton'
 
 
-function ChooseSection(params) {
+function ChooseSection({
+  onClick
+}) {
   return (
     <div className='choose-section-wrapper'>
       <div className='choose-section-header'>
@@ -10,9 +12,9 @@ function ChooseSection(params) {
         </svg>
       </div>
       <div className='choose-section-chooser'>
-        <ChooseButton choseType='scissor' />
-        <ChooseButton choseType='paper' />
-        <ChooseButton choseType='rock' />
+        <ChooseButton choseType='scissor' onClick={() => onClick('scissor')}/>
+        <ChooseButton choseType='paper' onClick={() => onClick('paper')}/>
+        <ChooseButton choseType='rock' onClick={() => onClick('rock')}/>
       </div>
     </div>
   )

@@ -7,7 +7,8 @@ import paperImg from './assets/btn-choose-paper.svg'
 import scissorImg from './assets/btn-choose-scissor.svg'
 
 function ChooseButton({
-  choseType = 'scissor'
+  choseType = 'scissor',
+  onClick
 }) {
 
   const tImage = (choseType) => {
@@ -25,7 +26,7 @@ function ChooseButton({
   }
   return (
     <div className='choose-button-wrapper'>
-      <div className='choose-button'>
+      <div className='choose-button' onClick={(e) => onClick(e)}>
         <img className='choose-button-type' src={tImage(choseType)} alt='' />
         <img className='choose-button-default' src={chooseImgDefault} alt='' />
         <img className='choose-button-hover' src={chooseImgHover} alt='' />

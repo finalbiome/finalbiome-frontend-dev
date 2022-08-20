@@ -9,8 +9,8 @@ function ScoreWidget({
   return (
     <div className='score-widget-wrapper'>
       <div className='score-widget'>
-        {outcomes.map(o => (
-          <ScoreDot outcome={o} />
+        {outcomes.map((o, i) => (
+          <ScoreDot outcome={o} key={`o-${i}`}/>
         ))}
       </div>
     </div>

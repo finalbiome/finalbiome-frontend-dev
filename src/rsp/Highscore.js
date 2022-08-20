@@ -12,8 +12,8 @@ function Highscore(props) {
       </div>
       <div className='highscore-name'>
         <svg viewBox="0 0 390 40">
-          <text x="195" y="15" text-anchor="middle">Your name:</text>
-          <text x="195" y="35" text-anchor="middle">5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY</text>
+          <text x="195" y="15" textAnchor="middle">Your name:</text>
+          <text x="195" y="35" textAnchor="middle">5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY</text>
         </svg>
       </div>
       <div className='highscore-score-wrapper'>

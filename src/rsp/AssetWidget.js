@@ -22,7 +22,7 @@ function AssetWidget({
         </div>
         <div className='asset-widget-text-container'>
           <svg viewBox={viewBox}>
-            <text x={x} y="15" text-anchor="middle">{value}</text>
+            <text x={x} y="15" textAnchor="middle">{value}</text>
           </svg>
         </div>
       </div>

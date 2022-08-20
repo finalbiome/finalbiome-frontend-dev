@@ -3,7 +3,12 @@ import scissorImg from './assets/scissors.svg'
 import paperImg from './assets/paper.svg'
 import { RspButton } from './RspButton'
 
-function SplashScreen(props) {
+function SplashScreen({
+  setGameStatus
+}) {
+
+  const handlePlay = () => setGameStatus('ready')
+
   return (
     <div className='splash-wrapper screen-wrapper'>
       <div className='hands-wrapper'>
@@ -15,7 +20,7 @@ function SplashScreen(props) {
         </div>
       </div>
       <img className='game-title' src={titleImg} alt='' />
-      <RspButton className='start-button' onClick={console.log} />
+      <RspButton className='start-button' onClick={handlePlay} />
     </div>
   )
 }
