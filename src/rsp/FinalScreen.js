@@ -9,7 +9,7 @@ import energyImg from './assets/widget-energy.png'
 
 
 function FinalScreen({
-  result = 'win',
+  results, // ['win', 'lose', 'draw', undefined, indefinded]
   score = [
     ['energy', 300],
     ['diamond', -40],
@@ -53,6 +53,18 @@ function FinalScreen({
     }
   }
 
+  // calcs the game result by results of rounds
+  const gameResult = () => {
+    const counts = {}
+    for (const r of results) {
+      if (!r) console.error('Calculating of the result with undefined values:', JSON.stringify(results))
+      counts[r] = counts[r] ? counts[r] + 1 : 1;
+    }
+    if (counts['win'] > counts['lose']) return 'win'
+    else if (counts['win'] < counts['lose']) return 'lose'
+    else return 'draw'
+  }
+
   return (
     <div className='final-screen-wrapper screen-wrapper'>
       <div className='game-screen-header'>
@@ -61,12 +73,12 @@ function FinalScreen({
       <div className='final-screen-dialog-wrapper'>
         <div className='final-screen-dialog'>
           <div className='final-screen-dialog-icon'>
-            <img className='final-screen-dialog-image' src={fImg(result)} alt='' />
+            <img className='final-screen-dialog-image' src={fImg(gameResult(results))} alt='' />
           </div>
           <div className='final-screen-dialog-body'>
             <div className='final-screen-dialog-header'>
               <svg viewBox="0 0 120 20">
-                <text x="60" y="15" textAnchor="middle">{caption(result)}</text>
+                <text x="60" y="15" textAnchor="middle">{caption(gameResult(results))}</text>
               </svg>
             </div>
             <div className='final-screen-dialog-score'>

@@ -1,11 +1,16 @@
 import { AssetWidget } from './AssetWidget'
 
-function AssetsWidgets(props) {
+function AssetsWidgets({
+  value = {
+    energy: 10,
+    diamonds: 55,
+  }
+}) {
   
   return (
     <div className='assets-widgets-wrapper'>
-      <AssetWidget type='energy' value={10} />
-      <AssetWidget type='diamond' value={55} />
+      <AssetWidget type='energy' value={value.energy} />
+      <AssetWidget type='diamond' value={value.energy} />
     </div>
   )
 }

@@ -7,7 +7,9 @@ import { RoundSection } from './RoundSection'
 
 
 function GameScreen({
-  setGameStatus
+  setGameStatus,
+  results, // ['win', 'lose', 'draw', undefined, indefinded]
+  balances, // {energy: 10, diamonds: 55}
 }) {
 
   const [selectedArm, setSelectedArm] = useState('') // new, ready, playing, finished
@@ -72,7 +74,7 @@ function GameScreen({
   useEffect(finalize, [final, setGameStatus])
 
 
-  // set whait time before show result screen
+  // set wait time before show result screen
   const waitTimer = () => {
     window.setTimeout(() => {
       if (result) {
@@ -86,7 +88,7 @@ function GameScreen({
   return (
     <div className='game-screen-wrapper screen-wrapper'>
       <div className='game-screen-header'>
-        <AssetsWidgets />
+        <AssetsWidgets value={balances} />
       </div>
       <div className='game-screen-main'>
         {selectedArm ? (
@@ -96,7 +98,7 @@ function GameScreen({
         )}
       </div>
       <div className='game-screen-footer'>
-        <Footer backClick={handleBackClick} />
+        <Footer backClick={handleBackClick} results={results} />
       </div>
     </div>
   )

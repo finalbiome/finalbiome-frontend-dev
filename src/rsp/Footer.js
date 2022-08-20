@@ -3,8 +3,14 @@ import { ScoreWidget } from './ScoreWidget'
 
 
 function Footer({
-  backClick = () => {}
+  backClick = () => {},
+  results, // ['win', 'lose', 'draw', undefined, indefinde]
 }) {
+
+  const invertResults = (results) => {
+    return results.map(r => !r ? undefined : (r === 'win' ? 'lose' : (r === 'lose' ? 'win' : 'draw')))
+  }
+
   return (
     <div className='footer-wrapper'>
       <div className='footer-btn-wrapper'>
@@ -19,7 +25,7 @@ function Footer({
               <text x="29" y="11" textAnchor="middle">You:</text>
             </svg>
           </div>
-          <ScoreWidget />
+          <ScoreWidget outcomes={results} />
         </div>
         <div className='footer-score'>
           <div className='footer-score-title'>
@@ -27,7 +33,7 @@ function Footer({
               <text x="29" y="11" textAnchor="middle">Enemy:</text>
             </svg>
           </div>
-          <ScoreWidget />
+          <ScoreWidget outcomes={invertResults(results)} />
         </div>
       </div>
     </div>
