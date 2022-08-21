@@ -14,7 +14,8 @@ function FinalScreen({
     ['energy', 300],
     ['diamond', -40],
   ],
-  backClick
+  balances, // {energy: 10, diamonds: 55}
+  backClick,
 }) {
 
   const fImg = (result) => {
@@ -55,9 +56,13 @@ function FinalScreen({
 
   // calcs the game result by results of rounds
   const gameResult = () => {
-    const counts = {}
+    const counts = {
+      win: 0,
+      draw: 0,
+      lose: 0,
+    }
     for (const r of results) {
-      if (!r) console.error('Calculating of the result with undefined values:', JSON.stringify(results))
+      if (!r) continue;
       counts[r] = counts[r] ? counts[r] + 1 : 1;
     }
     if (counts['win'] > counts['lose']) return 'win'
@@ -68,7 +73,7 @@ function FinalScreen({
   return (
     <div className='final-screen-wrapper screen-wrapper'>
       <div className='game-screen-header'>
-        <AssetsWidgets />
+        <AssetsWidgets value={balances} />
       </div>
       <div className='final-screen-dialog-wrapper'>
         <div className='final-screen-dialog'>

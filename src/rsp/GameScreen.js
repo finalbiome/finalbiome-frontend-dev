@@ -1,29 +1,47 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AssetsWidgets } from './AssetsWidgets'
 import { ChooseSection } from './ChooseSection'
 import { Footer } from './Footer'
+import { NUMBER_OF_ROUNDS } from './MainCanvas'
 import { RoundSection } from './RoundSection'
 
 
 function GameScreen({
+  gameStatus,
   setGameStatus,
   results, // ['win', 'lose', 'draw', undefined, indefinded]
+  result, // result from fb (win, lose, draw)
   balances, // {energy: 10, diamonds: 55}
+  turn, // () => {} when gamer select an arm
+  isFinal, // show that it's the last round
 }) {
 
-  const [selectedArm, setSelectedArm] = useState('') // new, ready, playing, finished
+  const [selectedArm, setSelectedArm] = useState('') // rock, scissor, paper
   const [retrievingResult, setRetrievingResult] = useState(false)
-  const [result, setResult] = useState('win') // result from fb (win, lose, draw)
+  const [delayedResults, setDelayedResults] = useState([...Array(NUMBER_OF_ROUNDS)]) // delayed result of `results`
   const [fbArm, setFbArm] = useState('') // arm as result from fb
   const [final, setFinal] = useState(false) // represent last round. If true, show final sreen
 
-  const [round, setRound] = useState(1) // temp
+  const [timer, setTimer] = useState('')
 
+  const resultsRef = useRef(results);
+  resultsRef.current = results;
+  const delResultsRef = useRef(delayedResults);
+  delResultsRef.current = delayedResults;
+  const isFinalRef = useRef(isFinal);
+  isFinalRef.current = isFinal;
+
+
+
+  const nextRound = () => resultsRef.current.filter(r => !!r).length > delResultsRef.current.filter(r => !!r).length
 
   const handleSelectArm = (arm) => {
-    console.log(arm)
     setSelectedArm(arm)
+    // propogate the turn to up
+    if (turn && typeof turn === 'function') {
+      turn()
+    }
     setRetrievingResult(true)
     waitTimer()
   }
@@ -74,16 +92,32 @@ function GameScreen({
   useEffect(finalize, [final, setGameStatus])
 
 
-  // set wait time before show result screen
+  // set wait time before show results
   const waitTimer = () => {
-    window.setTimeout(() => {
-      if (result) {
+    if (!retrievingResult) {
+      if (timer) {
+        clearTimeout(timer);
+        setTimer('')
+      }
+      return
+    };
+    if (timer) return;
+    const timerId = window.setTimeout(() => {
+      const results = resultsRef.current;
+      if (nextRound()) {
+        setDelayedResults([...results]);
         setRetrievingResult(false);
-        setRound(round + 1)
-        if (round === 2) setFinal(true)
+        if (isFinalRef.current) setFinal(true)
       } else waitTimer();
     }, 3000)
+    setTimer(timerId)
+    return () => {
+      clearTimeout(timerId);
+      setTimer('')
+
+    }
   }
+  useEffect(waitTimer, [retrievingResult])
 
   return (
     <div className='game-screen-wrapper screen-wrapper'>
@@ -98,7 +132,7 @@ function GameScreen({
         )}
       </div>
       <div className='game-screen-footer'>
-        <Footer backClick={handleBackClick} results={results} />
+        <Footer backClick={handleBackClick} results={delayedResults} />
       </div>
     </div>
   )
