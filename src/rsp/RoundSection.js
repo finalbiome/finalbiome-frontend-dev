@@ -47,6 +47,7 @@ function RoundSection({
           <img className={`game-shake game-${wait ? 'rock' : handPlayer}-left`} src={getImg(handPlayer)} alt=''
             style={{
               animationName: wait ? 'shake-left' : 'none',
+              marginLeft: wait ? '-115%' : '-18%',
             }}
           />
         </div>

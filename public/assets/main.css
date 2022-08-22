@@ -517,9 +517,9 @@ i.icon.game:before {
 }
 
 @keyframes shake-left {
-  from {  transform: matrix(-1, 0, 0, 1, -300, -10) rotate(0.05turn); transform-origin: 100% 70%; }
-  50% {  transform: matrix(-1, 0, 0, 1, -300, -10) rotate(-0.05turn); transform-origin: 100% 70%; }
-  to   {  transform: matrix(-1, 0, 0, 1, -300, -10) rotate(0.05turn); transform-origin: 100% 70%; }
+  from {  transform: matrix(-1, 0, 0, 1, 0, -14) rotate(0.05turn); transform-origin: 100% 70%; }
+  50% {  transform: matrix(-1, 0, 0, 1, 0, -14) rotate(-0.05turn); transform-origin: 100% 70%; }
+  to   {  transform: matrix(-1, 0, 0, 1, 0, -14) rotate(0.05turn); transform-origin: 100% 70%; }
 }
 
 .game-shake {
