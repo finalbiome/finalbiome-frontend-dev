@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { AssetsWidgets } from './AssetsWidgets'
 import { ChooseSection } from './ChooseSection'
 import { Footer } from './Footer'
-import { NUMBER_OF_ROUNDS } from './MainCanvas'
 import { RoundSection } from './RoundSection'
 
 
@@ -19,7 +18,7 @@ function GameScreen({
 
   const [selectedArm, setSelectedArm] = useState('') // rock, scissor, paper
   const [retrievingResult, setRetrievingResult] = useState(false)
-  const [delayedResults, setDelayedResults] = useState([...Array(NUMBER_OF_ROUNDS)]) // delayed result of `results`
+  const [delayedResults, setDelayedResults] = useState([...Array(results.length)]) // delayed result of `results`
   const [fbArm, setFbArm] = useState('') // arm as result from fb
   const [final, setFinal] = useState(false) // represent last round. If true, show final sreen
 

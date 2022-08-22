@@ -54,7 +54,7 @@ function Main(props) {
           // (In TS, because of the guard above, these will be typed)
           const [dispatchInfo] = event.data;
 
-          console.log(`ExtrinsicSuccess:: ${JSON.stringify(dispatchInfo.toHuman())}`);
+          console.debug(`ExtrinsicSuccess:: ${JSON.stringify(dispatchInfo.toHuman())}`);
           return JSON.stringify(event.data.toHuman());
         } else if (api.events.system.ExtrinsicFailed.is(event)) {
           // extract the data for this event
@@ -75,7 +75,7 @@ function Main(props) {
             errorInfo = dispatchError.toString();
           }
 
-          console.log(`ExtrinsicFailed:: ${errorInfo}`);
+          console.error(`ExtrinsicFailed: ${errorInfo}`);
           return errorInfo;
         }
         return JSON.stringify(event.data.toHuman());

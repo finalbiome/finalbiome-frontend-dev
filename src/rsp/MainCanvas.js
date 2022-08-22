@@ -3,28 +3,22 @@ import { web3FromSource } from '@polkadot/extension-dapp'
 import { useEffect, useState } from 'react'
 import { useSubstrateState } from '../substrate-lib'
 import backgroundImg from './assets/background.jpg'
-import { ChooseButton } from './ChooseButton'
-import { ChooseSection } from './ChooseSection'
 import { FinalScreen } from './FinalScreen'
-import { Footer } from './Footer'
 import { GameScreen } from './GameScreen'
-import { RspButton } from './RspButton'
 import { SplashScreen } from './SplashScreen'
 import { StartScreen } from './StartScreen'
 
 const GAME_ACCOUNT = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
-const NUMBER_OF_ROUNDS = 5;
 const FA_ID_ENERGY = 2;
 const FA_ID_DIAMOND = 3;
 const NFA_BET = 2;
 const OFFER_ID = 0;
 
 function MainCanvas(params) {
-
-
   const [gameStatus, setGameStatus] = useState('new') // new, ready, playing, finished
+  const [numberOfRounds, setNumberOfRounds] = useState(0)
   // consists of rounds results
-  const [roundsResults, setRoundsResults] = useState([...Array(NUMBER_OF_ROUNDS)])
+  const [roundsResults, setRoundsResults] = useState([...Array(numberOfRounds)])
   const [roundResult, setRoundResult] = useState('')
   const [gameResult, setGameResult] = useState('')
   // gamer already onboarded?
@@ -53,7 +47,7 @@ function MainCanvas(params) {
 
   const cleanGameState = () => {
     // clean old results
-    setRoundsResults([...Array(NUMBER_OF_ROUNDS)])
+    setRoundsResults([...Array(numberOfRounds)])
     setRoundResult('')
     setGameResult('')
     setBetAssetId('')
@@ -71,7 +65,7 @@ function MainCanvas(params) {
         setOnboarded(true)
       }
       // reset previuos game status
-      setRoundsResults([...Array(NUMBER_OF_ROUNDS)])
+      setRoundsResults([...Array(numberOfRounds)])
     } if (gameStatus === 'playing') {
       // purchase an bet asset
       if (!betAssetId) {
@@ -140,6 +134,7 @@ function MainCanvas(params) {
         let details = entity.unwrap().toJSON();
         setBetNfaDetails(details)
         setGamePrice(details.purchased.offers[OFFER_ID].price)
+        setNumberOfRounds(details.bettor.rounds)
       })
     }
     asyncFetch()
@@ -153,7 +148,7 @@ function MainCanvas(params) {
       unsub()
       setUnsub(null)
     }
-    console.log('Sending...')
+    console.debug('Sending...')
     await asyncFunc()
   }
 
@@ -475,12 +470,11 @@ const getFromAcct = async (currentAccount) => {
 
 const txResHandler = ({ status }) =>
   status.isFinalized
-    ? console.log(`Finalized. Block hash: ${status.asFinalized.toString()}`)
-    : console.log(`Current transaction status: ${status.type}`)
+    ? console.debug(`Finalized. Block hash: ${status.asFinalized.toString()}`)
+    : console.debug(`Current transaction status: ${status.type}`)
 
-const txErrHandler = err => console.log(`Transaction Failed: ${err.toString()}`)
+const txErrHandler = err => console.error(`Transaction Failed: ${err.toString()}`)
 
 export {
   MainCanvas,
-  NUMBER_OF_ROUNDS,
 }
