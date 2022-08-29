@@ -443,6 +443,7 @@ function MainCanvas(params) {
               <FinalScreen
                 backClick={handleBackClick}
                 results={[...roundsResults]}
+                gameResult={gameResult}
                 score={gameScore}
                 balances={balances()}
               />
