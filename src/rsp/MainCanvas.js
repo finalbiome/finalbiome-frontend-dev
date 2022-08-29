@@ -153,6 +153,8 @@ function MainCanvas(params) {
   }
 
   const onboardToGame = async () => {
+    console.log('Command: Onboard to Game')
+
     let unsub = null
     const asyncFunc = async () => {
       const fromAcct = await getFromAcct(currentAccount)
@@ -173,6 +175,8 @@ function MainCanvas(params) {
   }
 
   const purchaseAsset = async () => {
+    console.log('Command: Run Purchase Mechanic')
+
     let unsub = null
     const asyncFunc = async () => {
       const fromAcct = await getFromAcct(currentAccount)
@@ -192,6 +196,7 @@ function MainCanvas(params) {
   }
 
   const runBetMechanic = async () => {
+    console.log('Command: Run Bet Mechanic')
     let unsub = null
     const asyncFunc = async () => {
       const fromAcct = await getFromAcct(currentAccount)
@@ -211,6 +216,8 @@ function MainCanvas(params) {
   }
 
   const upgradeBetMechanic = async () => {
+    console.log('Command: Upgrade Bet Mechanic')
+
     let unsub = null
     const asyncFunc = async () => {
       const fromAcct = await getFromAcct(currentAccount)
