@@ -284,6 +284,9 @@ function MainCanvas(params) {
                     newResults[idx] = betOutcomes[outcomeIdx].result.toLowerCase()
                   }
                   setRoundsResults(newResults)
+                  console.log('fb:', newResults)
+                  setRoundResult(newResults[rounds - 1])
+
                   // set final result
                   let res = result.bet.result;
                   const newGameResult = res === 'Won' ? 'win' : (res === 'Lost' ? 'lose' : 'draw')
