@@ -2,7 +2,7 @@
 
 # Config
 ## FinalBiome
-1. Create Game
+1. Create Game - RPS
 2. Add memer
 3. Create FAs
   1. `energy`
