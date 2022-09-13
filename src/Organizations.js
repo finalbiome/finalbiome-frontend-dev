@@ -126,7 +126,7 @@ function OrganizationsList(props) {
 
     return () => unsubscribeAll && unsubscribeAll()
 
-  }, [api, keyring, setOrganizations])
+  }, [api, keyring, props.accountNonce])
 
   const getMembers = () => {
     setMembers([])
