@@ -26,6 +26,8 @@ function Main(props) {
   } = useSubstrate()
   const { api } = useSubstrateState()
   const [orgIds, setOrgIds] = useState([])
+  const [accountNonce, setAccountNonce] = useState(0)
+
 
   const handleItemClick = (e, { name }) => props.changeMenuItem(name)
   // Get the list of accounts we possess the private key for
@@ -51,7 +53,7 @@ function Main(props) {
     asyncFetch()
     return () => {unsub && unsub()}
   }
-  useEffect(getAllOrganizations, [api, currentAccount])
+  useEffect(getAllOrganizations, [api, currentAccount, accountNonce])
 
   function setMetaOrg() {
     keyring.getPairs().forEach(acc => {
@@ -68,6 +70,20 @@ function Main(props) {
       initialAddress.length > 0 &&
       setCurrentAccount(keyring.getPair(initialAddress))
   }, [currentAccount, setCurrentAccount, keyring, initialAddress])
+
+  const getAccountNonce = () => {
+    if (!currentAccount || !api) return
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.system.account(currentAccount.address, entity => {
+        const nonce = entity.nonce.isEmpty ? 0 : entity.nonce.toNumber()
+        setAccountNonce(nonce);
+      })
+    }
+    asyncFetch()
+    return () => { unsub && unsub() }
+  }
+  useEffect(getAccountNonce, [api, currentAccount])
 
   const onChange = addr => {
     setCurrentAccount(keyring.getPair(addr))
