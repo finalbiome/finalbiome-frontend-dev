@@ -9,8 +9,8 @@ import { SplashScreen } from './SplashScreen'
 import { StartScreen } from './StartScreen'
 
 const GAME_ACCOUNT = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
-const FA_ID_ENERGY = 2;
-const FA_ID_DIAMOND = 3;
+const FA_ID_ENERGY = 3;
+const FA_ID_DIAMOND = 2;
 const NFA_BET = 2;
 const OFFER_ID = 0;
 
