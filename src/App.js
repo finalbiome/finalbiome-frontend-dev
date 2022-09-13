@@ -32,19 +32,16 @@ function Main() {
   const [menuActiveItem, setMenuActiveItem] = useState('home')
   const [splash, setSplash] = useState(false)
   const [splashText, setSplashText] = useState('')
-
+  
   if (keyringState !== 'READY') return (
     <div></div>
   );
-
-
 
   const loader = (text) => {
     if (splashText === text) return;
     setSplashText(text)
     setSplash(!!text)
   }
-
 
   const Splash = ({
     text

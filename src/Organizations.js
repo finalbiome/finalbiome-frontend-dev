@@ -348,8 +348,8 @@ function FA(props) {
   return (
     <div>
       <Header as='h2'>Manage Fungible Assets</Header>
-      <FaList />
-      <FaManage />
+      <FaList {...props}/>
+      <FaManage {...props} />
     </div>
   )
 }
@@ -373,7 +373,7 @@ function FaList(props) {
     asyncFetch()
     return () => {unsub && unsub()}
   }
-  useEffect(subscribeFAIdByOrg, [api, keyring, currentAccount, org])
+  useEffect(subscribeFAIdByOrg, [api, keyring, currentAccount, org, props.accountNonce])
 
   const subscribeFA = () => {
     let unsub = null
@@ -618,7 +618,7 @@ function NFA(props) {
   return (
     <div>
       <Header as='h2'>Manage Non Fungible Assets</Header>
-      <NfaList />
+      <NfaList {...props}/>
       <NfaManage />
     </div>
   )
@@ -644,7 +644,7 @@ function NfaList(props) {
     asyncFetch()
     return () => { unsub && unsub() }
   }
-  useEffect(subscribeNFAIdByOrg, [api, keyring, currentAccount, org])
+  useEffect(subscribeNFAIdByOrg, [api, keyring, currentAccount, org, props.accountNonce])
 
   const subscribeNFA = () => {
     let unsub = null
@@ -1032,9 +1032,25 @@ function NfaEditAttributes(props) {
 }
 
 function Main(props) {
-  const handleItemClick = (e, { name }) => setMenuActiveItem(name)
+  const { api, currentAccount } = useSubstrateState()
 
   const [menuActiveItem, setMenuActiveItem] = useState('orgs')
+  const [accountNonce, setAccountNonce] = useState(0)
+  
+  const handleItemClick = (e, { name }) => setMenuActiveItem(name)
+
+  const getAccountNonce = () => {
+    let unsub = null
+    const asyncFetch = async () => {
+      unsub = await api.query.system.account(currentAccount.address, entity => {
+        const nonce = entity.nonce.isEmpty ? 0 : entity.nonce.toNumber()
+        setAccountNonce(nonce);
+      })
+    }
+    asyncFetch()
+    return () => { unsub && unsub() }
+  }
+  useEffect(getAccountNonce, [api, currentAccount])
 
   return (
     <Grid.Column>
@@ -1076,20 +1092,20 @@ function Main(props) {
           <Grid.Column width={14}>
             {menuActiveItem === 'orgs' ?
               <div>
-                <OrganizationsList {...props} />
-                <CreateOrganization {...props} />
-                <ManageMembers {...props} />
-                <OnboardAssetsView {...props} />
+                <OrganizationsList {...props} accountNonce={accountNonce} />
+                <CreateOrganization {...props} accountNonce={accountNonce} />
+                <ManageMembers {...props} accountNonce={accountNonce} />
+                <OnboardAssetsView {...props} accountNonce={accountNonce} />
               </div>
               : null}
             {menuActiveItem === 'fa' ?
               <div>
-                <FA />
+                <FA {...props} accountNonce={accountNonce} />
               </div>
               : null}
             {menuActiveItem === 'nfa' ?
               <div>
-                <NFA />
+                <NFA {...props} accountNonce={accountNonce} />
               </div>
               : null}
           </Grid.Column>
