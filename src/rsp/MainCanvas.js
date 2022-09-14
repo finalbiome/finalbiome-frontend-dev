@@ -57,7 +57,9 @@ function MainCanvas(params) {
   }
 
   const onGameStateChange = () => {
-    if (gameStatus === 'ready') {
+    if (gameStatus === 'new') {
+      cleanGameState()
+    } else if (gameStatus === 'ready') {
       cleanGameState()
       // try to onboart into the game
       if (!onboarded) {
@@ -405,6 +407,15 @@ function MainCanvas(params) {
     console.log('fb:', newResults)
   }
   useEffect(setResultsFromMechanicDetails, [api, betNfaDetails, mechanic])
+
+  const onCurrentAccountChanged = () => {
+    console.debug('Current acc changed to', currentAccount.meta.name)
+    // reset the game if account has been changed
+    setGameStatus('new')
+    setOnboarded(false)
+  }
+  useEffect(onCurrentAccountChanged, [currentAccount])
+
 
   return (
     <div style={{
