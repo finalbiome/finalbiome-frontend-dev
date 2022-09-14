@@ -25,44 +25,47 @@ function Main(props) {
     state: { keyring, currentAccount },
   } = useSubstrate()
   const { api } = useSubstrateState()
-  const [orgIds, setOrgIds] = useState([])
   const [accountNonce, setAccountNonce] = useState(0)
+  const [keyringOptions, setKeyringOptions] = useState([])
 
 
-  const handleItemClick = (e, { name }) => props.changeMenuItem(name)
+  const handleItemClick = (e, { name }) => props.changeMenuItem(name);
+
   // Get the list of accounts we possess the private key for
-  const keyringOptions = keyring.getPairs().map(account => ({
-    key: account.address,
-    value: account.address,
-    text: account.meta.name.toUpperCase(),
-    icon: account.meta.org ? 'game' : 'user',
-  }))
+  const fillKeyringOptions = () => {
+    const options = keyring.getPairs().map(account => ({
+      key: account.address,
+      value: account.address,
+      text: account.meta.name.toUpperCase(),
+      icon: account.meta.org ? 'game' : 'user',
+    }))
+    setKeyringOptions(options)
+  }
+  useEffect(fillKeyringOptions, [keyring])
+
 
   const initialAddress =
     keyringOptions.length > 0 ? keyringOptions[0].value : ''
 
   function getAllOrganizations() {
-    if (!currentAccount || !api) return
+    if (!api) return
     let unsub = null
     const asyncFetch = async () => {
       unsub = await api.query.organizationIdentity.organizations.keys(
         keys => {
-          setOrgIds(keys.map(k => k.toHuman()[0]))
+          keys.forEach(key => {
+            const address = key.toHuman()[0];
+            const pair = keyring.keyring.getPair(address)
+            pair.setMeta({org: !!pair})
+          })
+          fillKeyringOptions()
         })
     }
     asyncFetch()
     return () => {unsub && unsub()}
   }
-  useEffect(getAllOrganizations, [api, currentAccount, accountNonce])
+  useEffect(getAllOrganizations, [api, accountNonce, keyring])
 
-  function setMetaOrg() {
-    keyring.getPairs().forEach(acc => {
-      acc.setMeta({
-        org: orgIds.includes(acc.address)
-      })
-    });
-  }
-  useEffect(setMetaOrg, [keyring, orgIds])
   // Set the initial address
   useEffect(() => {
     // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)

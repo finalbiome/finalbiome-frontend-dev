@@ -4,6 +4,7 @@ import jsonrpc from '@polkadot/types/interfaces/jsonrpc'
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp'
 import { keyring as Keyring } from '@polkadot/ui-keyring'
+import { Keyring as KeyringApi } from '@polkadot/api'
 import { isTestChain } from '@polkadot/util'
 import { TypeRegistry } from '@polkadot/types/create'
 
@@ -117,6 +118,13 @@ const loadAccounts = (state, dispatch) => {
         isTestChain(systemChain)
 
       Keyring.loadAll({ isDevelopment }, allAccounts)
+
+      // Sets up additional accounts beyond the predefined ones
+      const kr = new KeyringApi({ type: 'sr25519' });
+      ['Pat', 'Oscar', 'Mike'].forEach(name => {
+        const pair = kr.addFromUri(`//${name}`, { isTesting: true, name: name.toLowerCase(), });
+        Keyring.keyring.addPair(pair);
+      })
 
       dispatch({ type: 'SET_KEYRING', payload: Keyring })
     } catch (e) {
