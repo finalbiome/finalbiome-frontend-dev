@@ -35,14 +35,15 @@ function AccountView(props) {
   }, [keyring, address, wellKnown])
 
   // const pretty = (account) => account ? `${account.meta.name} (${shortAddress})` : ''
-  const shortAddress = (address) => `${address.slice(0, 6)}...${address.slice(-6)}`
+  const shortAddress = (address) => `${address.slice(0, 6)}...${address.slice(-6)}`;
+  const getName = () => account.meta.orgName ? `${account.meta.orgName} (${account.meta.name.toLowerCase()})` : account.meta.name.toUpperCase();
 
   return account ? (
     <div>
       <CopyToClipboard text={account.address}>
         <Label as="a">
           <Icon name={account.meta.org ? "game" : "user"} />
-          {account.meta.name.toUpperCase()}
+          {getName()}
           <Label.Detail>{shortAddress(account.address)}</Label.Detail>
         </Label>
       </CopyToClipboard>

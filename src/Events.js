@@ -37,7 +37,7 @@ const sectionToIconName = (section, method) => {
 }
 
 function Main(props) {
-  const { api } = useSubstrateState()
+  const { api, keyring } = useSubstrateState()
   const [eventFeed, setEventFeed] = useState([])
   const [filterOptions, setFilterOptions] = useState([])
   const [currentFilter, setCurrentFilter] = useState([])
@@ -81,6 +81,29 @@ function Main(props) {
         return JSON.stringify(event.data.toHuman());
       }
 
+      const processEvent = (event) => {
+        if (api.events.system.ExtrinsicSuccess.is(event)) {
+          //
+        } else if (api.events.system.ExtrinsicFailed.is(event)) {
+          //
+        } else {
+          console.log(event.toHuman())
+          const ev = event.toHuman();
+          // Update account metadata with org name
+          if (ev.method === 'CreatedOrganization' && ev.section === 'organizationIdentity') {
+            const [orgName, org] = ev.data;
+            const account = keyring.keyring.getPair(org);
+            if (account) {
+              account.setMeta({
+                org:true,
+                orgName,
+              })
+            }
+          }
+        }
+
+      }
+
       unsub = await api.query.system.events(events => {
         // loop through the Vec<EventRecord>
         events.forEach(record => {
@@ -97,6 +120,8 @@ function Main(props) {
 
           const content = eventToString(event);
           const isError = api.events.system.ExtrinsicFailed.is(event);
+
+          processEvent(event);
 
           setEventFeed(e => [
             {

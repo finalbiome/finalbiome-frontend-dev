@@ -115,6 +115,14 @@ function OrganizationsList(props) {
               accountName: names[idx],
               name: organizations[idx].unwrap().name.toHuman()
             })
+            // Update keyring meta
+            const account = keyring.keyring.getPair(address);
+            if (account) {
+              account.setMeta({
+                org:true,
+                orgName: organizations[idx].unwrap().name.toHuman(),
+              })
+            }
           }
         });
         setOrganizations(orgsMap)
