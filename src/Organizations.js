@@ -152,6 +152,17 @@ function OrganizationsList(props) {
           }
         });
         allMembers.push(...ids)
+        // Update keyring meta
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i];
+          const account = keyring.keyring.getPair(id.member);
+          if (account) {
+            account.setMeta({
+              member:true,
+            })
+          }
+        }
+        
       }
       setMembers(allMembers)
     }

@@ -37,7 +37,7 @@ function Main(props) {
       key: account.address,
       value: account.address,
       text: account.meta.name.toUpperCase(),
-      icon: account.meta.org ? 'game' : 'user',
+      icon: account.meta.org ? 'game' : (account.meta.member ? 'address card' : 'user'),
     }))
     setKeyringOptions(options)
   }
@@ -149,7 +149,7 @@ function Main(props) {
               basic
               circular
               size="large"
-              icon={currentAccount?.meta.org ? "game" : "user"}
+              icon={currentAccount?.meta.org ? "game" : (currentAccount?.meta.member ? 'address card' : "user")}
               color={currentAccount ? 'green' : 'red'}
             />
           </CopyToClipboard>

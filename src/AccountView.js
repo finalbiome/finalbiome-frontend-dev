@@ -42,7 +42,7 @@ function AccountView(props) {
     <div>
       <CopyToClipboard text={account.address}>
         <Label as="a">
-          <Icon name={account.meta.org ? "game" : "user"} />
+          <Icon name={account.meta.org ? 'game' : (account.meta.member ? 'address card' : 'user')} />
           {getName()}
           <Label.Detail>{shortAddress(account.address)}</Label.Detail>
         </Label>
