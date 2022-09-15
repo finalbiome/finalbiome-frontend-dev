@@ -87,7 +87,6 @@ function Main(props) {
         } else if (api.events.system.ExtrinsicFailed.is(event)) {
           //
         } else {
-          console.log(event.toHuman())
           const ev = event.toHuman();
           // Update account metadata with org name
           if (ev.method === 'CreatedOrganization' && ev.section === 'organizationIdentity') {
