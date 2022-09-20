@@ -426,16 +426,16 @@ function FaList(props) {
           <Table.Body>
             <Table.Row>
               <Table.Cell width={2} textAlign="right">
-                <strong>Asset Id</strong>
+                <strong>Id</strong>
               </Table.Cell>
-              <Table.Cell width={10}>
+                <Table.Cell width={6}>
+                  <strong>Details</strong>
+                </Table.Cell>
+              <Table.Cell width={8}>
                 <strong>Owner</strong>
               </Table.Cell>
               <Table.Cell width={4} textAlign="right">
                 <strong>Supply</strong>
-              </Table.Cell>
-                <Table.Cell width={4}>
-                  <strong>Details</strong>
                 </Table.Cell>
             </Table.Row>
             {assets.sort((a, b) => a.id[1] - b.id[1]).map(asset => (
@@ -443,15 +443,15 @@ function FaList(props) {
                 <Table.Cell width={2} textAlign="right">
                   {asset.id[1]}
                 </Table.Cell>
-                <Table.Cell width={10}>
+                <Table.Cell width={6}
+                  title={JSON.stringify(asset.human, null, 2)}>
+                  <FaInstanceView faId={asset.id[1]} />
+                </Table.Cell>
+                <Table.Cell width={8}>
                   <AccountView address={asset.owner} />
                 </Table.Cell>
                 <Table.Cell width={4} textAlign="right">
                   {asset.supply}
-                </Table.Cell>
-                <Table.Cell width={4}
-                  title={JSON.stringify(asset.human, null, 2)}>
-                  <FaInstanceView faId={asset.id[1]} />
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -697,16 +697,16 @@ function NfaList(props) {
           <Table.Body>
             <Table.Row>
               <Table.Cell width={2} textAlign="right">
-                <strong>Class Id</strong>
+                <strong>Id</strong>
               </Table.Cell>
-              <Table.Cell width={4}>
+              <Table.Cell width={6}>
+                <strong>Details</strong>
+              </Table.Cell>
+              <Table.Cell width={8}>
                 <strong>Game Owner</strong>
               </Table.Cell>
-              <Table.Cell width={2} textAlign="right">
+              <Table.Cell width={4} textAlign="right">
                 <strong>Instances</strong>
-              </Table.Cell>
-              <Table.Cell width={4}>
-                <strong>Details</strong>
               </Table.Cell>
             </Table.Row>
             {classes.sort((a, b) => a.id[1] - b.id[1]).map(asset => (
@@ -714,16 +714,16 @@ function NfaList(props) {
                 <Table.Cell width={2} textAlign="right">
                   {asset.id[1]}
                 </Table.Cell>
-                <Table.Cell width={4}>
-                  <AccountView address={asset.owner} />
-                </Table.Cell>
-                <Table.Cell width={2} textAlign="right">
-                  {asset.instances}
-                </Table.Cell>
-                <Table.Cell width={4}
+                <Table.Cell width={6}
                   title={JSON.stringify(asset.human, null, 2)}>
                   {/* {JSON.stringify(asset.human)} */}
                   <NfaClassView nfaClassId={asset.id[1]} />
+                </Table.Cell>
+                <Table.Cell width={8}>
+                  <AccountView address={asset.owner} />
+                </Table.Cell>
+                <Table.Cell width={4} textAlign="right">
+                  {asset.instances}
                 </Table.Cell>
               </Table.Row>
             ))}

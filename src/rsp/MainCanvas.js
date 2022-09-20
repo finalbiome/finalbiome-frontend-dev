@@ -75,6 +75,7 @@ function MainCanvas(params) {
       }
     }
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(onGameStateChange, [gameStatus])
 
   /* FiinalBiome Logic */
