@@ -185,7 +185,7 @@ function MainCanvas(params) {
       const fromAcct = await getFromAcct(currentAccount)
       let txExecute
       try {
-        txExecute = api.tx['mechanics']['execBuyNfa'](NFA_BET, OFFER_ID);
+        txExecute = api.tx['mechanics']['execBuyNfa'](GAME_ACCOUNT, NFA_BET, OFFER_ID);
       } catch (error) {
         console.error(error)
         return
@@ -205,7 +205,7 @@ function MainCanvas(params) {
       const fromAcct = await getFromAcct(currentAccount)
       let txExecute
       try {
-        txExecute = api.tx['mechanics']['execBet'](NFA_BET, betAssetId);
+        txExecute = api.tx['mechanics']['execBet'](GAME_ACCOUNT, NFA_BET, betAssetId);
       } catch (error) {
         console.error(error)
         return
@@ -228,12 +228,12 @@ function MainCanvas(params) {
       try {
         const upgradeData = {
           mechanic_id: {
-            account_id: mechanicId[0],
+            gamer_account: mechanicId[0],
             nonce: mechanicId[1],
           },
           payload: 'Bet',
         }
-        txExecute = api.tx['mechanics']['upgrade'](upgradeData);
+        txExecute = api.tx['mechanics']['upgrade'](GAME_ACCOUNT, upgradeData);
       } catch (error) {
         console.error(error)
         return
@@ -277,13 +277,19 @@ function MainCanvas(params) {
               break;
 
             case 'mechanics': {
-              if (data[0] !== currentAccount.address) return;
+              if (!mechanicId) return;
+              // if (data[0] !== currentAccount.address) return;
+              let mechanicIdEv = data[0];
+              let nonce = data[1];
+              if (!(mechanicIdEv['accountId'] === mechanicId[0]['accountId'] &&
+                    mechanicIdEv['organizationId'] === mechanicId[0]['organizationId'] &&
+                    nonce === mechanicId[1])) return;
               switch (event.method) {
                 case 'Finished': {
                   // this mean that mechanic is done and destroyed.
                   // fill intermadiate `results` and set `GameResult`
                   const [account, nonce, result] = data;
-                  if (!(account === mechanicId[0], nonce === mechanicId[1])) return;
+                  // if (!(account[0] === mechanicId[0][0] && nonce === mechanicId[1])) return;
 
                   const rounds = betNfaDetails.bettor.rounds;
                   const betOutcomes = betNfaDetails.bettor.outcomes;
@@ -379,7 +385,11 @@ function MainCanvas(params) {
     // we should create a machanic,
     // save mechanic id and subscribe to it.
     if (!mechanicId) {
-      const newMechanicId = [currentAccount.address, accountNonce + 1];
+      const gamerAccount = {
+        accountId: currentAccount.address,
+        organizationId: GAME_ACCOUNT,
+      }
+      const newMechanicId = [gamerAccount, accountNonce + 1];
       makeTransaction(runBetMechanic);
       setMechanicId(newMechanicId);
     } else {

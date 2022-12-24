@@ -30,10 +30,11 @@ function UpgradeMechanic(props) {
       return
     }
     const constructMechanicUpgradeData = () => {
-      const mech = selectedMechanic.split('#')
+      // const mech = selectedMechanic.split('#')
+      const mech = JSON.parse(selectedMechanic)
       return {
         mechanic_id: {
-          account_id: mech[0],
+          gamer_account: mech[0],
           nonce: mech[1],
         },
         payload: 'Bet',
@@ -53,7 +54,7 @@ function UpgradeMechanic(props) {
         </FormField>
         <FormField>
           <label>Mechanic</label>
-          <ActiveMechanicsDropdown selectedMechanicId={selectedMechanic} setSelectedMechanicId={setSelectedMechanic} accountNonce={props.accountNonce} />
+          <ActiveMechanicsDropdown selectedMechanicId={selectedMechanic} setSelectedMechanicId={setSelectedMechanic} accountNonce={props.accountNonce} gameAddress={selectedAccount} />
         </FormField>
         <Form.Group>
           <FormField>
@@ -64,8 +65,8 @@ function UpgradeMechanic(props) {
               attrs={{
                 palletRpc: 'mechanics',
                 callable: 'upgrade',
-                inputParams: [data],
-                paramFields: ['upgrage_data'],
+                inputParams: [selectedAccount, data],
+                paramFields: ['organization_id', 'upgrage_data'],
               }}
               txOnClickHandler={handleTrx}
             />
@@ -87,6 +88,7 @@ function ActiveMechanicsDropdown({
   selectedMechanicId,
   setSelectedMechanicId, // returns as joined via # string
   accountNonce, // for update options
+  gameAddress,
 }) {
   const { api, currentAccount } = useSubstrateState()
   const [mechanicsIds, setMechanicsIds] = useState([])
@@ -97,7 +99,11 @@ function ActiveMechanicsDropdown({
   const getActiveMechnics = () => {
     let unsub = null
     const asyncFetch = async () => {
-      unsub = await api.query.mechanics.mechanics.keys(currentAccount.address,
+      const gamerAccount = {
+        accountId: currentAccount.address,
+        organizationId: gameAddress,
+      }
+      unsub = await api.query.mechanics.mechanics.keys(gamerAccount,
         keys => {
           const ids = keys.map(key => key.args.map(k => k.toJSON()));
           setMechanicsIds(ids)
@@ -113,7 +119,8 @@ function ActiveMechanicsDropdown({
       return {
         key: JSON.stringify(id),
         text: JSON.stringify(id),
-        value: mechanicsIds[idx].join('#'),
+        // value: mechanicsIds[idx].join('#'),
+        value: JSON.stringify(id),
         content: (
           <Label>
             <Icon name='cogs' />

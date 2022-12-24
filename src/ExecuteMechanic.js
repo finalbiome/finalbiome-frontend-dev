@@ -32,10 +32,10 @@ function ExecuteMechanic(params) {
           <MechanicsDropdown selectedMechanic={selectedMechanic} setSelectedMechanic={setSelectedMechanic} />
         </FormField>
         {selectedMechanic === 'Purchased' ? (
-          <PurchasedParams setStatus={setStatus} done={mechanicFinished} />
+          <PurchasedParams gameAddress={selectedAccount} setStatus={setStatus} done={mechanicFinished} />
         ) : null}
         {selectedMechanic === 'Bettor' ? (
-          <BettorParams setStatus={setStatus} done={mechanicFinished} />
+          <BettorParams gameAddress={selectedAccount} setStatus={setStatus} done={mechanicFinished} />
         ) : null}
       </Form>
       <TxStatusView status={status} setStatus={setStatus} />
@@ -44,6 +44,7 @@ function ExecuteMechanic(params) {
 }
 
 function PurchasedParams({
+  gameAddress,
   setStatus,
   done
 }) {
@@ -83,8 +84,8 @@ function PurchasedParams({
           attrs={{
             palletRpc: 'mechanics',
             callable: 'execBuyNfa',
-            inputParams: [selectedNfa, selectedOffer],
-            paramFields: ['class_id', 'offer_id'],
+            inputParams: [gameAddress, selectedNfa, selectedOffer],
+            paramFields: ['organization_id', 'class_id', 'offer_id'],
           }}
           txOnClickHandler={handleTrx}
         />
@@ -101,6 +102,7 @@ function PurchasedParams({
 }
 
 function BettorParams({
+  gameAddress,
   setStatus,
   done
 }) {
@@ -130,8 +132,8 @@ function BettorParams({
           attrs={{
             palletRpc: 'mechanics',
             callable: 'execBet',
-            inputParams: [selectedNfaInstance[1], selectedNfaInstance[2]],
-            paramFields: ['class_id', 'asset_id'],
+            inputParams: [gameAddress, selectedNfaInstance[1], selectedNfaInstance[2]],
+            paramFields: ['organization_id', 'class_id', 'asset_id'],
           }}
           txOnClickHandler={handleTrx}
         />
